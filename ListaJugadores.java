@@ -20,7 +20,6 @@ public class ListaJugadores{
     }
 
 
-    //El primero siempre es el turno que toca 
     public Jugador pasarTurno(){
         Iterator<Jugador> itr = getIterador();
         Jugador unJugador = null;
@@ -43,12 +42,13 @@ public class ListaJugadores{
 
         while(itr.hasNext()&&numturnos<=50){
             unJugador = itr.next();
-            if (unJugador.getPosicion() = 64){
+            if (unJugador.getIdCasillaPosicion() = 64){
                 return true;
             }else{
                 numturnos++;
-                //falta mas
+                return false;
             }
     
     }
+}
 }
