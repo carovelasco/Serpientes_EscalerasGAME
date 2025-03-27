@@ -3,11 +3,12 @@ public class Tablero(){
     private static Tablero miTablero = null;
 
     private Tablero(){
+        this.tablero = new Casilla[8][8];
     }
 
     public static Tablero getTablero(){
         if (miTablero == null) {
-            miTablero = new Casilla[8][8];
+            miTablero = new Tablero();
         }
         return miTablero;
     }
