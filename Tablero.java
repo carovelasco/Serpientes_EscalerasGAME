@@ -1,6 +1,16 @@
 public class Tablero(){
     private int[][] tablero = new Casilla[8][8];
-    
+    private static Tablero miTablero = null;
+
+    private Tablero(){
+    }
+
+    public static Tablero getTablero(){
+        if (miTablero == null) {
+            miTablero = new Casilla[8][8];
+        }
+        return miTablero;
+    }
     
     public void jugarPartida() {
         Jugador jugador1 = new Jugador(1, 1);
