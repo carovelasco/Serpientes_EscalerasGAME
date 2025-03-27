@@ -52,11 +52,10 @@ public class ListaJugadores{
             {
                 return true;
             }
-            else
-            {
+            else{
                 numturnos++;
-                return false;
             }
       }
+        return false;
 }
 }
