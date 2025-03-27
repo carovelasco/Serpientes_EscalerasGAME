@@ -1,5 +1,5 @@
 public class Tablero(){
-    private int[][] tablero = new Casilla[8][8];
+    private int[][] tablero;
     private static Tablero miTablero = null;
 
     private Tablero(){
