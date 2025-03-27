@@ -7,6 +7,6 @@ public CasillaMadre(int pIdCasillaDestino){
 }
 
 public void realizarAccion(Jugador pJugador){
-  pJuga
+  
 }
   
