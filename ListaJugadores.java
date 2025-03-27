@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class ListaJugadores{
     private ArrayList<Jugador>lista;
     private static ListaJugadores miListaJugadores;
@@ -22,17 +25,19 @@ public class ListaJugadores{
 
     public Jugador pasarTurno(){
         Iterator<Jugador> itr = getIterador();
-        Jugador unJugador = null;
+        Jugador jugadorActual = null;
 
-        while(itr.hasNext()){
-            unJugador = itr.next();
+        if(itr.hasNext())
+        {
+            jugadorActual = itr.next();
+            itr.remove();
         }
 
-        if (unJugador != null) {
-            this.lista.remove(unJugador);
-            this.lista.add(unJugador);  
+        if (jugadorActual != null) {
+            
+            this.lista.add(jugadorActual);  
         }
-        return unJugador;
+        return jugadorActual;
     }
 
     public boolean comprobarGanador(){
@@ -40,15 +45,18 @@ public class ListaJugadores{
         Jugador unJugador = null;
         int numturnos=0;
 
-        while(itr.hasNext()&&numturnos<=50){
+        while(itr.hasNext()&&numturnos<=50)
+        {
             unJugador = itr.next();
-            if (unJugador.getIdCasillaPosicion() = 64){
+            if (unJugador.getIdCasillaPosicion() == 64)
+            {
                 return true;
-            }else{
+            }
+            else
+            {
                 numturnos++;
                 return false;
             }
-    
-    }
+      }
 }
 }
