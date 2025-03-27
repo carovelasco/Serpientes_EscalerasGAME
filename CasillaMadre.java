@@ -7,5 +7,6 @@ public CasillaMadre(int pIdCasilla){
 }
 
 public void realizarAccion(Jugador pJugador){
+  System.out.println(textoImprimir);
 }
   
