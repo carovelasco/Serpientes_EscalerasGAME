@@ -47,6 +47,10 @@ public void testJugarTurno()
 
 public void testSetIdCasillaPosicion()
 {
+assertEquals(1,j1.setIdCasillaPosicion(1));
+
+j2=new Jugador(2,22)
+assertEquals(25,j2.setIdCasillaPosicion(25));
 }
 
 }
