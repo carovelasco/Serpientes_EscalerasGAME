@@ -5,28 +5,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class Tablero implements Iterable<CasillaPosicion> {
+public class Tablero {
     private CasillaMadre[][] tablero;
     private static Tablero miTablero = null;
     private ListaJugadores listaJugadores;
-
-    private class CasillaPosicion {
-        CasillaMadre casilla;
-        int fila;
-        int columna;
-        
-        public CasillaPosicion(CasillaMadre casilla, int fila, int columna) {
-            this.casilla = casilla;
-            this.fila = fila;
-            this.columna = columna;
-        }
-    }
-
-    @Override
-    public Iterator<CasillaPosicion> getIterador() {
-        return Iterator<CasillaPosicion>() {//DUDA 
-           
-    }
 
     private Tablero() {
         this.tablero = new CasillaMadre[8][8];
@@ -41,6 +23,20 @@ public class Tablero implements Iterable<CasillaPosicion> {
         return miTablero;
     }
     
+    public CasillaMadre buscarCasilla(Jugador jugador) {
+        int idCasillaJugador = jugador.getIdCasillaPosicion();  
+    
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (tablero[i][j].getIdCasilla() == idCasillaJugador) {
+                    return tablero[i][j];  
+                }
+            }
+        }
+    
+        return null;  
+    }
+    
     private void inicializarCasillasNormales() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -49,7 +45,7 @@ public class Tablero implements Iterable<CasillaPosicion> {
             }
         }
     }
-    
+
     private int calcularIdCasilla(int fila, int columna) {
         if (fila % 2 == 0) {
             return 64 - (fila * 8 + columna);
@@ -57,24 +53,24 @@ public class Tablero implements Iterable<CasillaPosicion> {
             return 64 - (fila * 8 + (7 - columna));
         }
     }
-    
+
     private int[] obtenerCoordenadas(int idCasilla) {
         int fila = (64 - idCasilla) / 8;
         int columna;
-        
+
         if (fila % 2 == 0) {
             columna = 64 - idCasilla - (fila * 8);
         } else {
             columna = 7 - (64 - idCasilla - (fila * 8));
         }
-        
-        return new int[] {fila, columna};
+
+        return new int[]{fila, columna};
     }
-    
+
     public void cargarTableroDesdeArchivo(String nombreArchivo) {
         String dirActual = System.getProperty("user.dir");
         String pathArchivoTablero = dirActual + File.separator + nombreArchivo;
-        
+
         InputStream fichero;
         try {
             fichero = new FileInputStream(pathArchivoTablero);
@@ -82,18 +78,18 @@ public class Tablero implements Iterable<CasillaPosicion> {
             System.out.println("Error al abrir el archivo: " + e.getMessage());
             return;
         }
-        
+
         Scanner sc = new Scanner(fichero);
         inicializarCasillasNormales();
-        
+
         while (sc.hasNextLine()) {
             String linea = sc.nextLine();
             if (linea.trim().isEmpty() || linea.startsWith("#")) {
                 continue;
             }
-            
+
             String[] datos = linea.split(",");
-            
+
             if (datos.length >= 3) {
                 String tipoCasilla = datos[0].trim();
                 int idCasilla = Integer.parseInt(datos[1].trim());
@@ -102,11 +98,11 @@ public class Tablero implements Iterable<CasillaPosicion> {
                 if (datos.length > 3) {
                     textoImprimir = datos[3].trim();
                 }
-                
+
                 int[] coordenadas = obtenerCoordenadas(idCasilla);
                 int fila = coordenadas[0];
                 int columna = coordenadas[1];
-                
+
                 if (fila >= 0 && fila < 8 && columna >= 0 && columna < 8) {
                     if (tipoCasilla.equals("SERPIENTE")) {
                         if (textoImprimir.isEmpty()) {
@@ -129,13 +125,51 @@ public class Tablero implements Iterable<CasillaPosicion> {
                         }
                         tablero[fila][columna] = new CasillaEspecial(62, textoImprimir);
                     }
-                    
+
                     tablero[fila][columna].setIdCasilla(idCasilla);
                 }
             }
         }
-        
+
         sc.close();
         System.out.println("Tablero cargado correctamente desde el archivo: " + nombreArchivo);
+    }
+
+    public Iterator<CasillaMadre> iterator() {
+        return new Iterator<CasillaMadre>() {
+            private int fila = 0;
+            private int columna = 0;
+
+            @Override
+            public boolean hasNext() {
+                return fila < 8;
+            }
+
+            @Override
+            public CasillaMadre next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+
+                CasillaMadre casilla = tablero[fila][columna];
+                columna++;
+
+                if (columna == 8) {
+                    columna = 0;
+                    fila++;
+                }
+
+                return casilla;
+            }
+        };
+    }
+    
+    public void imprimirTablero() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                System.out.print(tablero[i][j].getIdCasilla() + "\t");
+            }
+            System.out.println();
+        }
     }
 }
