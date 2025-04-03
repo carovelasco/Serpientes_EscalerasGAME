@@ -19,7 +19,7 @@ public class Jugador {
         this.idCasillaPosicion = pIdCasillaPosicion;
     }
     
-    private void moverPorDado(int pValorDado) {
+    public void moverPorDado(int pValorDado) {
         int nuevaPosicion = idCasillaPosicion + pValorDado;
         
         if (nuevaPosicion > 64) {
@@ -28,14 +28,14 @@ public class Jugador {
         }
         
         setIdCasillaPosicion(nuevaPosicion);
+        System.out.println("Jugador " + idJugador + " ha movido hasta la casilla " + idCasillaPosicion);
         
         Tablero.getTablero().buscarCasilla(this).realizarAccion(this);
     }
     
     public void jugarTurno() {
-        int valorDado = Dado.getDado().lanzarDado();
+        int valorDado = Dado.lanzarDado();
         System.out.println("Jugador " + idJugador + " ha sacado un " + valorDado);
         this.moverPorDado(valorDado);
-        System.out.println("Jugador " + idJugador + " ha movido hasta la casilla " + idCasillaPosicion);
     }
 }

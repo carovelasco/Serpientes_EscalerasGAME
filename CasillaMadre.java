@@ -9,4 +9,12 @@ public CasillaMadre(int pIdCasilla){
 public void realizarAccion(Jugador pJugador){
   System.out.println(textoImprimir);
 }
-  
+
+public int getIdCasilla() {
+  return idCasilla;
+}
+
+public void setIdCasilla(int pIdCasilla) {
+  this.idCasilla = pIdCasilla;
+}
+}
