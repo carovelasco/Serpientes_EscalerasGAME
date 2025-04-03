@@ -135,34 +135,6 @@ public class Tablero {
         System.out.println("Tablero cargado correctamente desde el archivo: " + nombreArchivo);
     }
 
-    public Iterator<CasillaMadre> iterator() {
-        return new Iterator<CasillaMadre>() {
-            private int fila = 0;
-            private int columna = 0;
-
-            @Override
-            public boolean hasNext() {
-                return fila < 8;
-            }
-
-            @Override
-            public CasillaMadre next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
-                }
-
-                CasillaMadre casilla = tablero[fila][columna];
-                columna++;
-
-                if (columna == 8) {
-                    columna = 0;
-                    fila++;
-                }
-
-                return casilla;
-            }
-        };
-    }
     
     public void imprimirTablero() {
         for (int i = 0; i < 8; i++) {
