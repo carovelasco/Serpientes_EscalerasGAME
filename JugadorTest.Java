@@ -48,6 +48,9 @@ public void testMoverPorDado()
 {
      assertFalse(j1.haGanado());
 
+     j1.setIdCasillaPosicion(63);
+     assertFalse(j1.haGanado());
+
      j1.setIdCasillaPosicion(64);
      assertTrue(j1.haGanado());
  }
