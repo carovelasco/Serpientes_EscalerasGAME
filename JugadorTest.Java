@@ -7,7 +7,7 @@ public class JugadorTest
 @Before
 public void setUp() throws Exception
 {
-j1=new Jugador(1,0);
+j1=new Jugador(1,1);
 }
 
 @After
@@ -20,7 +20,7 @@ j2=null;
 public void testGetIdJugador()
 {
 assertEquals(1,j1.getIdJugador());
-j2=new Jugador(2,0);
+j2=new Jugador(2,1);
 assertEquals(2,j2.getIdJugador());
 }
 
@@ -34,7 +34,12 @@ j2=new Jugador(2,63);
 assertEquals(60,j2.moverPorDado(valorDado));
 
 int valorDado=1;
+j2=new Jugador(2,61);
 assertEquals(62,j2.moverPorDado(valorDado));
+
+int valorDado=3;
+j1=new Jugador(1,63);
+assertEquals(62,j2.moverPorDado(valorDado);
 }
 
 
