@@ -7,7 +7,7 @@ public class JugadorTest
 @Before
 public void setUp() throws Exception
 {
-j1=new Jugador(1,1);
+j1=new Jugador(1);
 }
 
 @After
@@ -20,41 +20,53 @@ j2=null;
 public void testGetIdJugador()
 {
 assertEquals(1,j1.getIdJugador());
-j2=new Jugador(2,1);
+j2=new Jugador(2);
 assertEquals(2,j2.getIdJugador());
 }
 
 
 public void testMoverPorDado()
 {
-int valorDado=5;
-assertEquals(5,j1.moverPorDado(valorDado));
 
-j2=new Jugador(2,63);
-assertEquals(60,j2.moverPorDado(valorDado));
-
-int valorDado=1;
-j2=new Jugador(2,61);
-assertEquals(62,j2.moverPorDado(valorDado));
-
-int valorDado=3;
-j1=new Jugador(1,63);
-assertEquals(62,j2.moverPorDado(valorDado);
+    // Normal move
+    j1.moverPorDado(5);
+    assertEquals(6, j1.getIdCasillaPosicion());
+        
+    // Rebote
+    j2 = new Jugador(2);
+    j2.setIdCasillaPosicion(63);
+    j2.moverPorDado(5);
+    assertEquals(60, j2.getIdCasillaPosicion());
+        
+    // Gana Exactamente
+     j2.setIdCasillaPosicion(61);
+     j2.moverPorDado(3);
+     assertEquals(64, j2.getIdCasillaPosicion());
 }
 
+ public void testHaGanado() 
+{
+     assertFalse(j1.haGanado());
 
+     j1.setIdCasillaPosicion(64);
+     assertTrue(j1.haGanado());
+ }
 
 public void testJugarTurno()
 {
+ int initialPosition = j1.getIdCasillaPosicion();
+ j1.jugarTurno();
+ assertNotEquals(initialPosition, j1.getIdCasillaPosicion());
 }
 
 
 
 public void testSetIdCasillaPosicion()
 {
-assertEquals(1,j1.setIdCasillaPosicion(1));
+assertEquals(9,j1.setIdCasillaPosicion(9));
 
-j2=new Jugador(2,22)
+j2=new Jugador(2)
+this.idCasillaPosicion=22;
 assertEquals(25,j2.setIdCasillaPosicion(25));
 }
 
