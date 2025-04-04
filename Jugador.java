@@ -40,4 +40,7 @@ public class Jugador {
         System.out.println("Jugador " + idJugador + " ha sacado un " + valorDado);
         this.moverPorDado(valorDado);
     }
+    public boolean haGanado(){
+        return (this.idcasillaPosicion ==64);
+}
 }
