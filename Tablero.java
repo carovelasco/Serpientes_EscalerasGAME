@@ -13,7 +13,6 @@ public class Tablero {
     private Tablero() {
         this.tablero = new CasillaMadre[8][8];
         this.listaJugadores = ListaJugadores.getListaJugadores();
-        inicializarCasillasNormales();
     }
 
     public static Tablero getTablero() {
@@ -23,6 +22,16 @@ public class Tablero {
         return miTablero;
     }
     
+    
+    private void inicializarCasillasMadre() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                int idCasilla = calcularIdCasilla(i, j);
+                tablero[i][j] = new CasillaMadre(idCasilla);
+            }
+        }
+    }
+
     public CasillaMadre buscarCasilla(Jugador jugador) {
         int idCasillaJugador = jugador.getIdCasillaPosicion();  
     
@@ -36,16 +45,6 @@ public class Tablero {
     
         return null;  
     }
-    
-    private void inicializarCasillasNormales() {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                int idCasilla = calcularIdCasilla(i, j);
-                tablero[i][j] = new CasillaMadre(idCasilla);
-            }
-        }
-    }
-
     private int calcularIdCasilla(int fila, int columna) {
         if (fila % 2 == 0) {
             return 64 - (fila * 8 + columna);
@@ -80,7 +79,7 @@ public class Tablero {
         }
 
         Scanner sc = new Scanner(fichero);
-        inicializarCasillasNormales();
+        this.inicializarCasillasMadre();
 
         while (sc.hasNextLine()) {
             String linea = sc.nextLine();
@@ -136,6 +135,8 @@ public class Tablero {
     }
 
     
+
+    
     public void imprimirTablero() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -144,4 +145,41 @@ public class Tablero {
             System.out.println();
         }
     }
+
+
+public void jugarPartida() {
+    Jugador jugador1 = new Jugador(1, 1);
+    Jugador jugador2 = new Jugador(2, 1);
+    
+    listaJugadores.añadirJugador(jugador1);
+    listaJugadores.añadirJugador(jugador2);
+    
+    System.out.println("¡Comienza el juego de Serpientes y Escaleras!");
+    imprimirTablero();
+    
+    int numTurnos = 0;
+    boolean hayGanador = false;
+    
+    while (!listaJugadores.comprobarGanador() && numTurnos < 50) {
+        numTurnos++;
+        System.out.println("\n--- Turno " + numTurnos + " ---");
+        
+        Jugador jugadorActual = listaJugadores.pasarTurno();
+        System.out.println("Turno del Jugador " + jugadorActual.getIdJugador());
+        
+        jugadorActual.jugarTurno();
+        
+        hayGanador = listaJugadores.comprobarGanador();
+        
+        if (!hayGanador) {
+            listaJugadores.pasarTurno();
+        }
+    }
+    
+    if (numTurnos >= 50 && !hayGanador) {
+        System.out.println("\n¡El juego ha terminado en empate después de 50 turnos!");
+    }
+    
+    System.out.println("\n¡Fin del juego!");
+}
 }

@@ -4,8 +4,7 @@ import java.util.Iterator;
 public class ListaJugadores {
     private ArrayList<Jugador> lista;
     private static ListaJugadores miListaJugadores;
-    private Iterator<Jugador> iterador;
-
+    
     private ListaJugadores() {
         this.lista = new ArrayList<Jugador>();
     }

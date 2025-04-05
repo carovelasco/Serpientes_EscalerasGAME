@@ -34,7 +34,7 @@ public class Jugador {
     }
     
     public void jugarTurno() {
-        int valorDado = Dado.getDado().lanzarDado();
+        int valorDado = Dado.getDado().lanzarDado();//checar
         System.out.println("Jugador " + idJugador + " ha sacado un " + valorDado);
         this.moverPorDado(valorDado);
     }
