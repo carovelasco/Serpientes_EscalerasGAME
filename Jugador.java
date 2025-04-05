@@ -2,9 +2,8 @@ public class Jugador {
     private int idJugador;
     private int idCasillaPosicion;
 
-    public Jugador(int pIdJugador) {
+    public Jugador(int pIdJugador, int pCasillaPosicion) {
         this.idJugador = pIdJugador;
-        this.idCasillaPosicion = 1;
     }
     
     public int getIdJugador() {
@@ -40,7 +39,5 @@ public class Jugador {
         System.out.println("Jugador " + idJugador + " ha sacado un " + valorDado);
         this.moverPorDado(valorDado);
     }
-    public boolean haGanado(){
-        return (this.idcasillaPosicion ==64);
-}
+    
 }

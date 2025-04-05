@@ -3,6 +3,5 @@ public class SerpientesYEscaleras {
         Tablero tablero = Tablero.getTablero();
         tablero.cargarTableroDesdeArchivo("FicheroParaTablero.txt");
         tablero.imprimirTablero();
-        tablero.jugarPartida();
     }
 }
