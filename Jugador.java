@@ -2,9 +2,9 @@ public class Jugador {
     private int idJugador;
     private int idCasillaPosicion;
 
-    public Jugador(int pIdJugador, int pIdCasillaPosicion) {
+    public Jugador(int pIdJugador) {
         this.idJugador = pIdJugador;
-        this.idCasillaPosicion = pIdCasillaPosicion;
+        this.idCasillaPosicion = 1;
     }
     
     public int getIdJugador() {
@@ -30,12 +30,17 @@ public class Jugador {
         setIdCasillaPosicion(nuevaPosicion);
         System.out.println("Jugador " + idJugador + " ha movido hasta la casilla " + idCasillaPosicion);
         
-        Tablero.getTablero().buscarCasilla(this).realizarAccion(this);
+        CasillaMadre casillaAVerificar=Tablero.getTablero().buscarCasilla(this);
+        casillaAVerificar.realizarAccion(this);
     }
     
     public void jugarTurno() {
         int valorDado = Dado.getDado().lanzarDado();//checar
+
         System.out.println("Jugador " + idJugador + " ha sacado un " + valorDado);
         this.moverPorDado(valorDado);
     }
+    public boolean haGanado(){
+        return (this.idcasillaPosicion ==64);
+}
 }
