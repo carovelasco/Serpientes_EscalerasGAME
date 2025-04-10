@@ -8,7 +8,6 @@ import java.util.Scanner;
 public class Tablero {
     private CasillaMadre[][] tablero;
     private static Tablero miTablero = null;
-    private ListaJugadores listaJugadores;
 
     private Tablero() {
         this.tablero = new CasillaMadre[8][8];
@@ -23,7 +22,7 @@ public class Tablero {
     }
     
     
-    private void inicializarCasillasMadre() {
+    private void asignarIdACasillasMadre() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 int idCasilla = calcularIdCasilla(i, j);
@@ -50,22 +49,19 @@ public class Tablero {
         }
     }
 
-    private ArrayList<Integer> obtenerCoordenadas(int idCasilla) {
+    private Coordenadas obtenerCoordenadas(int pIdCasilla) {
         int fila = (64 - idCasilla) / 8;
         int columna;
-        
+    
         if (fila % 2 == 0) {
             columna = 64 - idCasilla - (fila * 8);
         } else {
             columna = 7 - (64 - idCasilla - (fila * 8));
         }
-        
-        ArrayList<Integer> coordenadas = new ArrayList<>();
-        coordenadas.add(fila);
-        coordenadas.add(columna);
-        
-        return coordenadas;
+    
+        return new Coordenadas(fila, columna);
     }
+    
 
     public void cargarTableroDesdeArchivo(String nombreArchivo) {
         String dirActual = System.getProperty("user.dir");
@@ -80,7 +76,7 @@ public class Tablero {
         }
 
         Scanner sc = new Scanner(fichero);
-        this.inicializarCasillasMadre();
+        this.asignarIdsACasillas();
 
         while (sc.hasNextLine()) {
             String linea = sc.nextLine();
@@ -98,10 +94,10 @@ public class Tablero {
                 if (datos.length > 3) {
                     textoImprimir = datos[3].trim();
                 }
-
-                ArrayList<Integer> coordenadas = obtenerCoordenadas(idCasilla);
-                int fila = coordenadas.get(0);
-                int columna = coordenadas.get(1);
+                Coordenadas coordenadas = obtenerCoordenadas(int pIdCasilla);
+                int fila = coordenadas.getFila();
+                int columna = coordenadas.getColumna();
+                
 
                 if (fila >= 0 && fila < 8 && columna >= 0 && columna < 8) {
                     if (tipoCasilla.equals("SERPIENTE")) {
@@ -145,4 +141,4 @@ public class Tablero {
             System.out.println("+------+------+------+------+------+------+-------+---------+"); }
     }
 
-}
+}}
