@@ -2,8 +2,9 @@ public class Jugador {
     private int idJugador;
     private int idCasillaPosicion;
 
-    public Jugador(int pIdJugador, int pCasillaPosicion) {
+    public Jugador(int pIdJugador) {
         this.idJugador = pIdJugador;
+        this.idCasillaposicion=1;
     }
     
     public int getIdJugador() {
