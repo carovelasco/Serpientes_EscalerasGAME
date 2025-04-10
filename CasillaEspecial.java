@@ -13,7 +13,5 @@ public class CasillaEspecial extends CasillaMadre {
       System.out.println(textoImprimir);
       pJugador.setIdCasillaPosicion(this.idCasillaDestino);
   }
-  public int getIdCasillaDestino() {
-    return idCasillaDestino;
-  }
+ 
 }

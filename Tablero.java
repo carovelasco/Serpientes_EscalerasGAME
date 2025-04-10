@@ -32,19 +32,16 @@ public class Tablero {
         }
     }
 
-    public CasillaMadre buscarCasilla(Jugador jugador) {
-        int idCasillaJugador = jugador.getIdCasillaPosicion();  
-    
+    public CasillaMadre buscarCasilla(int idCasillaBuscada) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (tablero[i][j].getIdCasilla() == idCasillaJugador) {
-                    return tablero[i][j];  
+                if (tablero[i][j].getIdCasilla() == idCasillaBuscada) {
+                    return tablero[i][j];
                 }
             }
         }
-    
-        return null;  
-    }
+        return null; 
+
     private int calcularIdCasilla(int fila, int columna) {
         if (fila % 2 == 0) {
             return 64 - (fila * 8 + columna);
@@ -53,17 +50,21 @@ public class Tablero {
         }
     }
 
-    private int[] obtenerCoordenadas(int idCasilla) {
+    private ArrayList<Integer> obtenerCoordenadas(int idCasilla) {
         int fila = (64 - idCasilla) / 8;
         int columna;
-
+        
         if (fila % 2 == 0) {
             columna = 64 - idCasilla - (fila * 8);
         } else {
             columna = 7 - (64 - idCasilla - (fila * 8));
         }
-
-        return new int[]{fila, columna};
+        
+        ArrayList<Integer> coordenadas = new ArrayList<>();
+        coordenadas.add(fila);
+        coordenadas.add(columna);
+        
+        return coordenadas;
     }
 
     public void cargarTableroDesdeArchivo(String nombreArchivo) {
@@ -98,9 +99,9 @@ public class Tablero {
                     textoImprimir = datos[3].trim();
                 }
 
-                int[] coordenadas = obtenerCoordenadas(idCasilla);
-                int fila = coordenadas[0];
-                int columna = coordenadas[1];
+                ArrayList<Integer> coordenadas = obtenerCoordenadas(idCasilla);
+                int fila = coordenadas.get(0);
+                int columna = coordenadas.get(1);
 
                 if (fila >= 0 && fila < 8 && columna >= 0 && columna < 8) {
                     if (tipoCasilla.equals("SERPIENTE")) {
@@ -122,7 +123,7 @@ public class Tablero {
                         if (textoImprimir.isEmpty()) {
                             textoImprimir = "¡Avanzas hasta casi el final!";
                         }
-                        tablero[fila][columna] = new CasillaEspecial(62, textoImprimir);
+                        tablero[fila][columna] = new CasillaCasiFin(62, textoImprimir);
                     }
 
                     tablero[fila][columna].setIdCasilla(idCasilla);
