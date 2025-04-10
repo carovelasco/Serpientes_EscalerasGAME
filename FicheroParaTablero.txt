@@ -6,7 +6,7 @@
 SERPIENTE,16,6,¡Has caído en una serpiente! Bajas a la casilla 6
 SERPIENTE,47,26,¡Una serpiente muy larga! Desciendes a la casilla 26
 SERPIENTE,49,11,¡La serpiente te atrapa! Bajas a la casilla 11
-SERPIENTE,62,19,¡Oh no, casi llegas! Caes a la casilla 19
+SERPIENTE,61,19,¡Oh no, casi llegas! Caes a la casilla 19
 
 # Escaleras
 ESCALERA,4,14,¡Has encontrado una escalera! Subes a la casilla 14
