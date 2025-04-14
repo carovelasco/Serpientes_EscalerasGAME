@@ -17,11 +17,16 @@ public class CasillaCasiFin extends CasillaMadre
   
   @Override
   public void realizarAccion(Jugador pJugador) {
-
-        //hay que sacar un 6, se necesita pValorDado
-      
       System.out.println(textoImprimir);
-      pJugador.setIdCasillaPosicion(this.idCasillaDestino);
+      int valorDado = Dado.getDado().lanzarDado();  //hay que sacar un 6, se necesita pValorDado
+      if (valorDado == 6)
+      {
+          System.out.println(textoImprimir);
+          pJugador.setIdCasillaPosicion(this.idCasillaDestino);
+      }
+      else
+      {
+          System.out.println("Qué pena, no has sacado un 6.")
   }
   public int getIdCasillaDestino() {
     return idCasillaDestino;
