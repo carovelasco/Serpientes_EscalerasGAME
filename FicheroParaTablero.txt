@@ -16,4 +16,4 @@ ESCALERA,36,44,¡Pequeña escalera! Subes a la casilla 44
 
 # Casillas especiales
 ALINICIO,51,1,¡Mala suerte! Vuelves al principio del juego
-CASIFIN,27,62,¡Has sacado un 6! Avanzas hasta la casilla 62
+CASIFIN,27,62,¡Qué suerte! Si sacas un 6, avanzas hasta la casilla 62
