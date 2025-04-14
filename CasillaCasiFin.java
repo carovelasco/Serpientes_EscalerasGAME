@@ -18,7 +18,8 @@ public class CasillaCasiFin extends CasillaMadre
   @Override
   public void realizarAccion(Jugador pJugador) {
 
-        //hay que haber sacado un 6, se necesita pValorDado
+        //hay que sacar un 6, se necesita pValorDado
+      
       System.out.println(textoImprimir);
       pJugador.setIdCasillaPosicion(this.idCasillaDestino);
   }
