@@ -1,4 +1,4 @@
-public class CasillaEspecial extends CasillaEspecial {//completar
+public class CasillaEspecial extends CasillaEspecial {
     private int idCasillaDestino;
     private String textoImprimir;
     
