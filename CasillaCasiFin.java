@@ -21,7 +21,7 @@ public class CasillaCasiFin extends CasillaMadre
       int valorDado = Dado.getDado().lanzarDado();  //hay que sacar un 6, se necesita pValorDado
       if (valorDado == 6)
       {
-          System.out.println(textoImprimir);
+          System.out.println("¡Felicidades! Has sacado un 6.");
           pJugador.setIdCasillaPosicion(this.idCasillaDestino);
       }
       else
