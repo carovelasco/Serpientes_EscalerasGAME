@@ -22,15 +22,24 @@ public class Tablero {
     }
     
     public void jugarPartida(){
-        int numTurnos = 0;
+        int numTurnos = 1;
         boolean comprobarGanador = False;
-        while (!comprobarGanador && numTurnos < 50)
+        while (!comprobarGanador && numTurnos < 101)
         {
+            System.out.println("_________________________Turno nº" + numTurnos + "_________________________")
             Jugador unJugador = getListaJugadores().pasarTurno();
             unJugador.jugarTurno;
             this.imprimirTablero();
             comprobarGanador = getListaJugadores().comprobarGanador();
-            
+            numTurnos = numTurnos + 1;
+        }
+        if (comprobarGanador)
+        {
+            System.out.println("¡Fin de la partida! Ha ganado" + unJugador);
+        }
+        else 
+        {
+            System.out.println("¡Fin de la partida! Se ha superado el número de turnos.");
         }
     }
     
