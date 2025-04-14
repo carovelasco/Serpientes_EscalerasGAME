@@ -21,6 +21,18 @@ public class Tablero {
         return miTablero;
     }
     
+    public void jugarPartida(){
+        int numTurnos = 0;
+        boolean comprobarGanador = False;
+        while (!comprobarGanador && numTurnos < 50)
+        {
+            Jugador unJugador = getListaJugadores().pasarTurno();
+            unJugador.jugarTurno;
+            this.imprimirTablero();
+            comprobarGanador = getListaJugadores().comprobarGanador();
+            
+        }
+    }
     
     private void asignarIdACasillasMadre() {
         for (int i = 0; i < 8; i++) {
