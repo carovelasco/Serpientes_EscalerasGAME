@@ -1,20 +1,29 @@
-public class CasillaMadre{
+public class CasillaMadre {
   private int idCasilla;
-  private String textoImprimir = "Has caído en una casilla normal.";
+  private String textoImprimir;
   
-public CasillaMadre(int pIdCasilla){
-  this.idCasilla = pIdCasilla;
-}
+  public CasillaMadre(int pIdCasilla, String pTextoImprimir) {
+    this.idCasilla = pIdCasilla;
+    this.textoImprimir = pTextoImprimir;
+  }
 
-public void realizarAccion(Jugador pJugador){
-  System.out.println(textoImprimir);
-}
+  public void realizarAccion(Jugador pJugador) {
+    System.out.println(textoImprimir);
+  }
 
-public int getIdCasilla() {
-  return idCasilla;
-}
+  public int getIdCasilla() {
+    return idCasilla;
+  }
 
-public void setIdCasilla(int pIdCasilla) {
-  this.idCasilla = pIdCasilla;
-}
+  public void setIdCasilla(int pIdCasilla) {
+    this.idCasilla = pIdCasilla;
+  }
+  
+  protected String getTextoImprimir() {
+    return textoImprimir;
+  }
+  
+  protected void imprimirTexto() {
+    System.out.println(textoImprimir);
+  }
 }

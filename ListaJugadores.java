@@ -25,20 +25,10 @@ public class ListaJugadores {
     }
 
     public Jugador pasarTurno(){
-        Iterator<Jugador> itr = getIterador();
-        Jugador jugadorActual = null;
-
-        if(itr.hasNext())
-        {
-            jugadorActual = itr.next();
-            itr.remove();
-        }
-
-        if (jugadorActual != null) {
-            
-            this.lista.add(jugadorActual);  
-        }
-        return jugadorActual;
+        Jugador unJugador=this.lista.get(0);
+        this.lista.remove(unJugador);
+        this.lista.add(unJugador);      
+        return unJugador;
     }
 
     public boolean comprobarGanador(){
