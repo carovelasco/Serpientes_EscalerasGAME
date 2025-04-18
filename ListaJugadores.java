@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class ListaJugadores {
     private ArrayList<Jugador> lista;
@@ -16,10 +15,6 @@ public class ListaJugadores {
         return miListaJugadores;
     }
     
-    private Iterator<Jugador> getIterador() {
-        return this.lista.iterator();
-    }
-    
     public void añadirJugador(Jugador pJugador) {
         this.lista.add(pJugador);
     }
@@ -31,22 +26,14 @@ public class ListaJugadores {
         return unJugador;
     }
 
-    public boolean comprobarGanador(){
-        Iterator<Jugador> itr = getIterador();
-        Jugador unJugador = null;
-        int numturnos=0;
-
-        while(itr.hasNext()&&numturnos<=50)
-        {
-            unJugador = itr.next();
-            if (unJugador.getIdCasillaPosicion() == 64)
-            {
-                return true;
-            }
-            else{
-                numturnos++;
-            }
-      }
+    public boolean comprobarGanador() {
+        Jugador jugadorActual = this.lista.get(1);
+        
+        if (jugadorActual.getIdCasillaPosicion() == 64) {
+            return true;
+        }
+        
         return false;
+    }
 }
-}
+

@@ -4,13 +4,16 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 public class Tablero {
+    //atributos
     private CasillaMadre[][] tablero;
     private static Tablero miTablero = null;
 
+    //constructor
     private Tablero() {
         this.tablero = new CasillaMadre[8][8];
     }
 
+    //unica instancia
     public static Tablero getTablero() {
         if (miTablero == null) {
             miTablero = new Tablero();
@@ -18,6 +21,25 @@ public class Tablero {
         return miTablero;
     }
     
+    //metodos
+
+    //para el caso en que el archivo ingresado no sea correcto o no exista se crea uno por default 
+    public void crearTableroBasico() {
+        this.asignarIdACasillasMadre();
+        
+        setCasillaEspecial(4, "ESCALERA", 14, "¡Has encontrado una escalera! Subes a la casilla 14");
+        setCasillaEspecial(9, "SERPIENTE", 6, "¡Has caído en una serpiente! Bajas a la casilla 6");
+        setCasillaEspecial(20, "ESCALERA", 38, "¡Has encontrado una escalera! Subes a la casilla 38");
+        setCasillaEspecial(28, "SERPIENTE", 15, "¡Has caído en una serpiente! Bajas a la casilla 15");
+        setCasillaEspecial(40, "ALINICIO", 1, "¡Oh no! Vuelves a la casilla de inicio.");
+        setCasillaEspecial(51, "ESCALERA", 67, "¡Has encontrado una escalera! Subes a la casilla 67");
+        setCasillaEspecial(54, "CASIFIN", 62, "¡Lanza el dado y si obtienes 6, Avanza a la casilla 62!");
+        setCasillaEspecial(71, "SERPIENTE", 21, "¡Has caído en una serpiente! Bajas a la casilla 21");
+        
+        System.out.println("Tablero básico automatico creado");
+    } 
+
+    //metodo principal para jugar partida
     public void jugarPartida() {
         Jugador Jugador1=new Jugador(1);
         Jugador Jugador2=new Jugador(2);
@@ -31,8 +53,8 @@ public class Tablero {
 
         while (!comprobarGanador && numTurnos < 101) {
             System.out.println(" ");
-            System.out.println("_________________________Turno nº" + numTurnos + "_________________________");
             unJugador = ListaJugadores.getListaJugadores().pasarTurno();
+            System.out.println("_________________________Turno del jugador "+unJugador.getIdJugador()+"_________________________");
             unJugador.jugarTurno();
             comprobarGanador = ListaJugadores.getListaJugadores().comprobarGanador();
             numTurnos = numTurnos + 1;
@@ -49,6 +71,7 @@ public class Tablero {
         }
     }
     
+    //metodos auxiliares a otros metodos
     private void asignarIdACasillasMadre() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -57,7 +80,6 @@ public class Tablero {
             }
         }
     }
-
     public CasillaMadre buscarCasilla(Jugador pJugador) {
         int idCasillaBuscada = pJugador.getIdCasillaPosicion();
         for (int i = 0; i < 8; i++) {
@@ -69,7 +91,6 @@ public class Tablero {
         }
         return null;
     }
-
     private int calcularIdCasilla(int fila, int columna) {
         if (fila % 2 == 0) {
             return 64 - (fila * 8 + columna);
@@ -77,7 +98,6 @@ public class Tablero {
             return 64 - (fila * 8 + (7 - columna));
         }
     }
-
     private Coordenadas obtenerCoordenadas(int idCasilla) {
         int fila = (64 - idCasilla) / 8;
         int columna;
@@ -91,7 +111,9 @@ public class Tablero {
         return new Coordenadas(fila, columna);
     }
     
-     public void setCasillaEspecial(int idCasilla, String tipoCasilla, int idCasillaDestino, String textoImprimir) {
+
+    //set necesario para convertir casillas madres originales a casillas especiales 
+    public void setCasillaEspecial(int idCasilla, String tipoCasilla, int idCasillaDestino, String textoImprimir) {
         Coordenadas coordenadas = obtenerCoordenadas(idCasilla);
         int fila = coordenadas.getFila();
         int columna = coordenadas.getColumna();
@@ -118,9 +140,9 @@ public class Tablero {
                     break;
                 case "CASIFIN":
                     if (textoImprimir.isEmpty()) {
-                        textoImprimir = "¡Avanzas hasta casi el final!";
+                        textoImprimir = "¡Lanza el dado y si obtienes 6, Avanza a la casilla 62!";
                     }
-                    tablero[fila][columna] = new CasillaCasiFin(idCasillaDestino, textoImprimir);
+                    tablero[fila][columna] = new CasillaCasiFin(idCasilla, textoImprimir);
                     break;
                 default:
                     tablero[fila][columna] = new CasillaMadre(idCasilla, textoImprimir);
@@ -183,18 +205,5 @@ public class Tablero {
         }
     }
 
-    public void crearTableroBasico() {
-        this.asignarIdACasillasMadre();
-        
-        setCasillaEspecial(4, "ESCALERA", 14, "¡Has encontrado una escalera! Subes a la casilla 14");
-        setCasillaEspecial(9, "SERPIENTE", 6, "¡Has caído en una serpiente! Bajas a la casilla 6");
-        setCasillaEspecial(20, "ESCALERA", 38, "¡Has encontrado una escalera! Subes a la casilla 38");
-        setCasillaEspecial(28, "SERPIENTE", 15, "¡Has caído en una serpiente! Bajas a la casilla 15");
-        setCasillaEspecial(40, "ALINICIO", 1, "¡Oh no! Vuelves a la casilla de inicio.");
-        setCasillaEspecial(51, "ESCALERA", 67, "¡Has encontrado una escalera! Subes a la casilla 67");
-        setCasillaEspecial(54, "CASIFIN", 62, "¡Avanzas hasta casi el final!");
-        setCasillaEspecial(71, "SERPIENTE", 21, "¡Has caído en una serpiente! Bajas a la casilla 21");
-        
-        System.out.println("Tablero básico automatico creado");
-    }
+    
 }

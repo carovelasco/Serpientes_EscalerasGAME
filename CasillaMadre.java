@@ -1,14 +1,15 @@
 public class CasillaMadre {
   private int idCasilla;
   private String textoImprimir;
-  
+
   public CasillaMadre(int pIdCasilla, String pTextoImprimir) {
     this.idCasilla = pIdCasilla;
     this.textoImprimir = pTextoImprimir;
   }
 
   public void realizarAccion(Jugador pJugador) {
-    System.out.println(textoImprimir);
+    imprimirTexto();
+    pJugador.setIdCasillaPosicion(this.idCasilla);
   }
 
   public int getIdCasilla() {
@@ -18,11 +19,11 @@ public class CasillaMadre {
   public void setIdCasilla(int pIdCasilla) {
     this.idCasilla = pIdCasilla;
   }
-  
+
   protected String getTextoImprimir() {
     return textoImprimir;
   }
-  
+
   protected void imprimirTexto() {
     System.out.println(textoImprimir);
   }
