@@ -40,7 +40,7 @@ public class Tablero {
         
         if (comprobarGanador) {
             System.out.println(" ");
-            System.out.println("¡Fin de la partida! Ha ganado " + unJugador.getIdJugador());
+            System.out.println("¡Fin de la partida! Ha ganado " + "Jugador "+unJugador.getIdJugador());
             this.imprimirTablero();
 
         } else {
@@ -91,7 +91,6 @@ public class Tablero {
         return new Coordenadas(fila, columna);
     }
     
-     // Método setter que sustituye una casilla normal por una especial
      public void setCasillaEspecial(int idCasilla, String tipoCasilla, int idCasillaDestino, String textoImprimir) {
         Coordenadas coordenadas = obtenerCoordenadas(idCasilla);
         int fila = coordenadas.getFila();
@@ -132,7 +131,7 @@ public class Tablero {
     }
     
     public void cargarTableroDesdeArchivo(String nombreArchivo) {
-        this.asignarIdACasillasMadre(); // Aseguramos que el tablero esté inicializado
+        this.asignarIdACasillasMadre();
 
         String dirActual = System.getProperty("user.dir");
         String pathArchivoTablero = dirActual + File.separator + nombreArchivo;
