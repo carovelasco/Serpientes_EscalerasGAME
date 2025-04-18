@@ -27,14 +27,14 @@ public class Tablero {
     public void crearTableroBasico() {
         this.asignarIdACasillasMadre();
         
-        setCasillaEspecial(4, "ESCALERA", 14, "¡Has encontrado una escalera! Subes a la casilla 14");
-        setCasillaEspecial(9, "SERPIENTE", 6, "¡Has caído en una serpiente! Bajas a la casilla 6");
-        setCasillaEspecial(20, "ESCALERA", 38, "¡Has encontrado una escalera! Subes a la casilla 38");
-        setCasillaEspecial(28, "SERPIENTE", 15, "¡Has caído en una serpiente! Bajas a la casilla 15");
-        setCasillaEspecial(40, "ALINICIO", 1, "¡Oh no! Vuelves a la casilla de inicio.");
-        setCasillaEspecial(51, "ESCALERA", 67, "¡Has encontrado una escalera! Subes a la casilla 67");
-        setCasillaEspecial(54, "CASIFIN", 62, "¡Lanza el dado y si obtienes 6, Avanza a la casilla 62!");
-        setCasillaEspecial(71, "SERPIENTE", 21, "¡Has caído en una serpiente! Bajas a la casilla 21");
+        setCasillaEspecial(4, "ESCALERA", 14);
+        setCasillaEspecial(9, "SERPIENTE", 6);
+        setCasillaEspecial(20, "ESCALERA", 38);
+        setCasillaEspecial(28, "SERPIENTE", 15);
+        setCasillaEspecial(40, "ALINICIO", 1);
+        setCasillaEspecial(37, "ESCALERA", 55);
+        setCasillaEspecial(54, "CASIFIN", 62);
+        setCasillaEspecial(71, "SERPIENTE", 21);
         
         System.out.println("Tablero básico automatico creado");
     } 
@@ -80,31 +80,31 @@ public class Tablero {
             }
         }
     }
-    public CasillaMadre buscarCasilla(Jugador pJugador) {
-        int idCasillaBuscada = pJugador.getIdCasillaPosicion();
+    public CasillaMadre buscarCasilla(int idCasillaBuscada) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (tablero[i][j].getIdCasilla() == idCasillaBuscada) {
-                    return tablero[i][j];
+                    return tablero[i][j]; 
                 }
             }
         }
-        return null;
+        return null; // Retorna null si no encuentra la casilla
     }
     private int calcularIdCasilla(int fila, int columna) {
         if (fila % 2 == 0) {
-            return 64 - (fila * 8 + columna);
-        } else {
-            return 64 - (fila * 8 + (7 - columna));
+            return 64 - (fila * 8 + columna); // Si la fila es par (0, 2, 4, 6)
+
+        } else {  // Si la fila es impar (1, 3, 5, 7)
+            return 64 - (fila * 8 + (7 - columna));// Como va en dirección inversa, es 7-columna
         }
     }
     private Coordenadas obtenerCoordenadas(int idCasilla) {
-        int fila = (64 - idCasilla) / 8;
+        int fila = (64 - idCasilla) / 8;// no se considera el residuo
         int columna;
     
-        if (fila % 2 == 0) {
-            columna = 64 - idCasilla - (fila * 8);
-        } else {
+        if (fila % 2 == 0) { // Si la fila es Par (0, 2, 4, 6)
+            columna = (64 - idCasilla)- (fila * 8);
+        } else { // Si la fila es impar (1, 3, 5, 7)
             columna = 7 - (64 - idCasilla - (fila * 8));
         }
     
@@ -113,89 +113,82 @@ public class Tablero {
     
 
     //set necesario para convertir casillas madres originales a casillas especiales 
-    public void setCasillaEspecial(int idCasilla, String tipoCasilla, int idCasillaDestino, String textoImprimir) {
-        Coordenadas coordenadas = obtenerCoordenadas(idCasilla);
+
+    public void setCasillaEspecial(int pIdCasilla, String pTipoCasilla, int pIdCasillaDestino) {
+        Coordenadas coordenadas = obtenerCoordenadas(pIdCasilla);
         int fila = coordenadas.getFila();
         int columna = coordenadas.getColumna();
         
+        String textoImprimir = "";
+        
         if (fila >= 0 && fila < 8 && columna >= 0 && columna < 8) {
-            switch(tipoCasilla) {
+            switch(pTipoCasilla) {
                 case "SERPIENTE":
-                    if (textoImprimir.isEmpty()) {
-                        textoImprimir = "¡Has caído en una serpiente! Bajas a la casilla " + idCasillaDestino;
-                    }
-                    tablero[fila][columna] = new CasillaEspecial(idCasillaDestino, textoImprimir);
+                    textoImprimir = "¡Has caído en una serpiente! Bajas a la casilla " + pIdCasillaDestino;
+                    tablero[fila][columna] = new CasillaEspecial(pIdCasilla, pIdCasillaDestino, textoImprimir);
                     break;
                 case "ESCALERA":
-                    if (textoImprimir.isEmpty()) {
-                        textoImprimir = "¡Has encontrado una escalera! Subes a la casilla " + idCasillaDestino;
-                    }
-                    tablero[fila][columna] = new CasillaEspecial(idCasillaDestino, textoImprimir);
+                    textoImprimir = "¡Has encontrado una escalera! Subes a la casilla " + pIdCasillaDestino;
+                    tablero[fila][columna] = new CasillaEspecial(pIdCasilla, pIdCasillaDestino, textoImprimir);
                     break;
                 case "ALINICIO":
-                    if (textoImprimir.isEmpty()) {
-                        textoImprimir = "¡Oh no! Vuelves a la casilla de inicio.";
-                    }
-                    tablero[fila][columna] = new CasillaEspecial(1, textoImprimir);
+                    textoImprimir = "¡Oh no! Vuelves a la casilla de inicio.";
+                    tablero[fila][columna] = new CasillaEspecial(pIdCasilla, 1, textoImprimir);
                     break;
                 case "CASIFIN":
-                    if (textoImprimir.isEmpty()) {
-                        textoImprimir = "¡Lanza el dado y si obtienes 6, Avanza a la casilla 62!";
-                    }
-                    tablero[fila][columna] = new CasillaCasiFin(idCasilla, textoImprimir);
+                    textoImprimir = "¡Lanza el dado y si obtienes 6, Avanza a la casilla 62!";
+                    tablero[fila][columna] = new CasillaCasiFin(pIdCasilla, textoImprimir);
                     break;
-                default:
-                    tablero[fila][columna] = new CasillaMadre(idCasilla, textoImprimir);
             }
-            
-            tablero[fila][columna].setIdCasilla(idCasilla);
         }
     }
-    
-    public void cargarTableroDesdeArchivo(String nombreArchivo) {
+    public void cargarTableroDesdeArchivo(String pNombreArchivo) {
         this.asignarIdACasillasMadre();
 
+        //para poder usar ruta relativa y no absoluta 
         String dirActual = System.getProperty("user.dir");
-        String pathArchivoTablero = dirActual + File.separator + nombreArchivo;
+        String pathArchivoTablero = dirActual + File.separator + pNombreArchivo;
 
         try {
             InputStream fichero = new FileInputStream(pathArchivoTablero);
             Scanner sc = new Scanner(fichero);
             
-            while (sc.hasNextLine()) {
+            while (sc.hasNextLine()) {//recorre cada linea del archivo
                 String linea = sc.nextLine();
-                if (linea.trim().isEmpty() || linea.startsWith("#")) {
+                if (linea.isEmpty() || linea.startsWith("#")) {// trim es metodo de la clase String de java
                     continue;
                 }
 
                 String[] datos = linea.split(",");
 
                 if (datos.length >= 3) {
-                    String tipoCasilla = datos[0].trim();
-                    int idCasilla = Integer.parseInt(datos[1].trim());
-                    int idCasillaDestino = Integer.parseInt(datos[2].trim());
+                    String pTipoCasilla = datos[0].trim();
+                    //al leer del archivo es tipo string, con parseint se hace tipo int
+                    int pIdCasilla = Integer.parseInt(datos[1].trim());
+                    int pIdCasillaDestino = Integer.parseInt(datos[2].trim());
                     
                     String textoImprimir = "";
-                    if (datos.length > 3) {
+                    if (datos.length > 3) { //en caso de que agreguen su propio texto 
                         textoImprimir = datos[3].trim();
                     }
                     
-                    this.setCasillaEspecial(idCasilla, tipoCasilla, idCasillaDestino, textoImprimir);
+                    //modifica de casilla normal a casilla especial 
+                    this.setCasillaEspecial(pIdCasilla, pTipoCasilla, pIdCasillaDestino);
                 }
             }
 
             sc.close();
-            System.out.println("Tablero cargado correctamente desde el archivo: " + nombreArchivo);
+            System.out.println("Tablero cargado correctamente desde el archivo");
             
         } catch (Exception e) {
             System.out.println("Error al abrir el archivo: " + e.getMessage());
-            System.out.println("Se crea tablero automatico");
+            System.out.println("Se creara tablero automatico");
             this.crearTableroBasico();
         }
     }
 
     public void imprimirTablero() {
-        System.out.println("------------------------------------------");
+        System.out.println("------------------------------------------------------");
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 System.out.print(tablero[i][j].getIdCasilla() + "\t");

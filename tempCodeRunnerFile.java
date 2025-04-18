@@ -1,1 +1,1 @@
-        tablero.imprimirTablero();
+            tablero[fila][columna].setIdCasilla(idCasilla);

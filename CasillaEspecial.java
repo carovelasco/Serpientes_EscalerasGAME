@@ -1,8 +1,8 @@
 public class CasillaEspecial extends CasillaMadre {
-    protected int idCasillaDestino; // Cambiado a protected para que las subclases accedan
+    protected int idCasillaDestino; 
 
-    public CasillaEspecial(int pIdCasillaDestino, String pTextoImprimir) {
-        super(0, pTextoImprimir); // ID temporal que será actualizado por setCasillaEspecial
+    public CasillaEspecial(int pIdCasilla, int pIdCasillaDestino, String pTextoImprimir) {
+        super(pIdCasilla, pTextoImprimir); 
         this.idCasillaDestino = pIdCasillaDestino;
     }
 

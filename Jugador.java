@@ -30,7 +30,7 @@ public class Jugador {
         setIdCasillaPosicion(nuevaPosicion);
         System.out.println("Jugador " + idJugador + " ha movido hasta la casilla " + idCasillaPosicion);
 
-        CasillaMadre casillaAVerificar = Tablero.getTablero().buscarCasilla(this);
+        CasillaMadre casillaAVerificar = Tablero.getTablero().buscarCasilla(idCasillaPosicion);
         casillaAVerificar.realizarAccion(this);
     }
 

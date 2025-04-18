@@ -1,19 +1,18 @@
-public class CasillaCasiFin extends CasillaMadre {
-    private int idCasillaDestino;
+public class CasillaCasiFin extends CasillaEspecial {
 
     public CasillaCasiFin(int pIdCasilla, String pTextoImprimir) {
-        super(pIdCasilla, pTextoImprimir);
-        this.idCasillaDestino = 62; 
+        super(pIdCasilla, 62, pTextoImprimir);
     }
 
     @Override
     public void realizarAccion(Jugador pJugador) {
-        super.imprimirTexto();
+        super.imprimirTexto(); 
         int valorDado = Dado.getDado().lanzarDado();
 
         if (valorDado == 6) {
-            System.out.println("¡Felicidades! Has sacado un 6.");
-            pJugador.setIdCasillaPosicion(idCasillaDestino);
+            System.out.println("...");
+            System.out.println("¡Felicidades! Has sacado un 6. Puedes moverte hacia la casilla");
+            pJugador.setIdCasillaPosicion(super.getIdCasillaDestino()); 
         } else {
             System.out.println("...");
             System.out.println("...");
