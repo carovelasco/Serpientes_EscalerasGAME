@@ -16,14 +16,6 @@ public class CasillaMadre {
     return idCasilla;
   }
 
-  public void setIdCasilla(int pIdCasilla) {
-    this.idCasilla = pIdCasilla;
-  }
-
-  protected String getTextoImprimir() {
-    return textoImprimir;
-  }
-
   protected void imprimirTexto() {
     System.out.println(textoImprimir);
   }
