@@ -45,7 +45,7 @@ public void testMoverPorDado()
 
      //Escalera
      j2.setIdCasillaPosicion(2);
-     j2.moverPorDdao(2);
+     j2.moverPorDado(2);
      assertEquals(14,j2.getIdCasillaPosicion());
      
      j2.setIdCasillaPosicion(5);
