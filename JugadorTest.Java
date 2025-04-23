@@ -116,12 +116,14 @@ public void testJugarTurno()
 
 public void testSetIdCasillaPosicion()
 {
-assertEquals(9,j1.setIdCasillaPosicion(9));
+	j1.setIdCasillaPosicion(9);
+  assertEquals(9,j1.getIdCasillaPosicion());
 
-j2=new Jugador(2)
-this.idCasillaPosicion=22;
-assertEquals(25,j2.setIdCasillaPosicion(25));
+  j2=new Jugador(2);
+  j2.setIdCasillaPosicion(25);
+  assertEquals(25,j2.getIdCasillaPosicion());
 }
+
 
 }
 
