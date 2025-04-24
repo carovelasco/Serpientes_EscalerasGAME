@@ -1,0 +1,92 @@
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import java.io.File;
+import java.io.FileWriter;
+
+public class TableroTest {
+    private Tablero tablero;
+
+    @Before
+    public void setUp() {
+        Tablero.reiniciarParaPruebas(); 
+        tablero = Tablero.getTablero();
+        tablero.asignarIdACasillasMadre(); // Initialize the board
+    }
+
+
+    @Test
+    public void testNumeroCorrectaDelTablero() {
+       
+        assertEquals(1, tablero.calcularIdCasilla(7, 0));  
+        assertEquals(8, tablero.calcularIdCasilla(7, 7));  
+        assertEquals(9, tablero.calcularIdCasilla(6, 7));  
+        assertEquals(16, tablero.calcularIdCasilla(6, 0));
+        assertEquals(64, tablero.calcularIdCasilla(0, 0)); 
+        assertEquals(57, tablero.calcularIdCasilla(0, 7)); 
+    }
+
+    @Test
+    public void testCasillaEspeciales() {
+        tablero.setCasillaEspecial(28, "SERPIENTE", 15);
+        CasillaMadre casilla = tablero.buscarCasilla(28);
+        
+        assertTrue(casilla instanceof CasillaEspecial);
+        assertEquals(15, ((CasillaEspecial)casilla).getIdCasillaDestino());
+        assertTrue(((CasillaEspecial)casilla).getTextoImprimir().contains("serpiente"));
+    }
+
+    @Test
+    public void testCargarConfiguracionDesdeArchivo() throws Exception {
+        // Crear archivo temporal de prueba
+        File archivoTemp = File.createTempFile("tablero_prueba", ".config");
+        try (FileWriter escritor= new FileWriter(archivoTemp)) {
+           escritor.write("ESCALERA,4,14\nSERPIENTE,28,15\nAlInicio,11,1/nCASIFIN,60,62");
+        }
+        
+        tablero.cargarTableroDesdeArchivo(testFile.getAbsolutePath());
+        
+        assertTrue(tablero.buscarCasilla(4) instanceof CasillaEspecial);
+        assertTrue(tablero.buscarCasilla(28) instanceof CasillaEspecial);
+        assertTrue(tablero.buscarCasilla(11) instanceof CasillaEspecial);
+        assertTrue(tablero.buscarCasilla(60) instanceof CasillaCasiFin);
+        assertFalse(tablero.buscarCasilla(1) instanceof CasillaEspecial);
+        
+       archivoTemp.delete();
+    }
+
+    @Test
+    public void testConversionCoordeandas() {
+        Coordenadas coords = tablero.obtenerCoordenadas(1);
+        assertEquals(7, coords.getFila());
+        assertEquals(0, coords.getColumna());
+
+        
+        coords = tablero.obtenerCoordenadas(64);
+        assertEquals(0, coords.getFila());
+        assertEquals(0, coords.getColumna());
+
+       
+        coords = tablero.obtenerCoordenadas(28);
+        assertEquals(3, coords.getFila());
+        assertEquals(3, coords.getColumna());
+    }
+
+    @Test
+    public void testTableroPorDefecto() {
+        tablero.crearTableroBasico();
+        // Verify some default tiles
+        assertTrue(tablero.buscarCasilla(4) instanceof CasillaEspecial);  // Escalera
+        assertTrue(tablero.buscarCasilla(51) instanceof CasillaEspecial); // AlInicio
+        assertTrue(tablero.buscarCasilla(27) instanceof CasillaCasiFin); //CasiFin
+        assertTrue(tablero.buscarCasilla(22) instanceof CasillaEspecial); //Escalera
+        assertTrue(tablero.buscarCasilla(16) instanceof CasillaEspecial);  // Serpientes
+        assertTrue(tablero.buscarCasilla(47) instanceof CasillaEspecial); // Serpientes
+        assertTrue(tablero.buscarCasilla(49) instanceof CasillaEspecial);  // Serpientes
+        assertTrue(tablero.buscarCasilla(61) instanceof CasillaEspecial); // Serpientes
+        assertTrue(tablero.buscarCasilla(9) instanceof CasillaEspecial);  // Escalera
+        assertTrue(tablero.buscarCasilla(36) instanceof CasillaEspecial); // Escalera
+        assertFalse(tablero.buscarCasilla(6) instanceof CasillaEspecial);
+        assertFalse(tablero.buscarCasilla(9) instanceof CasillaCasiFin);
+    }
+}
