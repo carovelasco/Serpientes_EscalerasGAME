@@ -23,18 +23,24 @@ public class Tablero {
     
     //metodos
 
+    public static void reiniciarParaPruebas(){
+        miTablero=null;
+    }
+
     //para el caso en que el archivo ingresado no sea correcto o no exista se crea uno por default 
     public void crearTableroBasico() {
         this.asignarIdACasillasMadre();
         
         setCasillaEspecial(4, "ESCALERA", 14);
-        setCasillaEspecial(9, "SERPIENTE", 6);
-        setCasillaEspecial(20, "ESCALERA", 38);
-        setCasillaEspecial(28, "SERPIENTE", 15);
-        setCasillaEspecial(40, "ALINICIO", 1);
-        setCasillaEspecial(37, "ESCALERA", 55);
-        setCasillaEspecial(54, "CASIFIN", 62);
-        setCasillaEspecial(71, "SERPIENTE", 21);
+        setCasillaEspecial(16, "SERPIENTE", 6);
+        setCasillaEspecial(9, "ESCALERA", 39);
+        setCasillaEspecial(47, "SERPIENTE", 26);
+        setCasillaEspecial(51, "ALINICIO", 1);
+        setCasillaEspecial(22, "ESCALERA", 44);
+        setCasillaEspecial(27, "CASIFIN", 62);
+        setCasillaEspecial(61, "SERPIENTE", 19);
+        setCasillaEspecial(36, "ESCALERA", 41);
+        setCasillaEspecial(61, "SERPIENTE", 19);
         
         System.out.println("Tablero básico automatico creado");
     } 
@@ -51,7 +57,7 @@ public class Tablero {
         boolean comprobarGanador = false;
         Jugador unJugador = null;
 
-        while (!comprobarGanador && numTurnos < 101) {
+        while (!comprobarGanador && numTurnos < 51) {
             System.out.println(" ");
             unJugador = ListaJugadores.getListaJugadores().pasarTurno();
             System.out.println("_________________________Turno del jugador "+unJugador.getIdJugador()+"_________________________");
@@ -98,7 +104,7 @@ public class Tablero {
             return 64 - (fila * 8 + (7 - columna));// Como va en dirección inversa, es 7-columna
         }
     }
-    private Coordenadas obtenerCoordenadas(int idCasilla) {
+    public Coordenadas obtenerCoordenadas(int idCasilla) {
         int fila = (64 - idCasilla) / 8;// no se considera el residuo
         int columna;
     
