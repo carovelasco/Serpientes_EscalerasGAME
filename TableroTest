@@ -3,18 +3,33 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 
 public class TableroTest {
-    private Tablero tablero;
+     Tablero tablero;
+     private final ByteArrayOutputStream outContent=new ByteArrayOutputStream();
+     private final PrintStream originalOut= System.out;
 
     @Before
     public void setUp() {
         Tablero.reiniciarParaPruebas(); 
         tablero = Tablero.getTablero();
         tablero.asignarIdACasillasMadre(); // Initialize the board
-    }
+        System.setOut(new PrintStream(outContent)); 
+        Dado.getDado().setFixedValue(3);
 
-    @Test 
+     }
+    @After 
+    public void tearDown(){
+      System.setOut(originalOut);
+        Tablero.reiniciar();
+        ListaJugadores.reiniciar();
+        Dado.reiniciar();
+   }
+   @Test 
     public void testMAE()
     {
      Tablero unTablero=Tablero.getTablero();
@@ -148,6 +163,81 @@ public class TableroTest {
         assertEquals(1, ((CasillaEspecial)casilla).getIdCasillaDestino());
         
     }
+
+
+    @Test
+    public void testInicializarJugadores() {
+        tablero.inicializarJugadores();
+        
+        assertEquals(2, ListaJugadores.getListaJugadores().getNumJugadores());
+        assertNotNull(ListaJugadores.getListaJugadores().getJugador(0));
+        assertNotNull(ListaJugadores.getListaJugadores().getJugador(1));
+    }
+
+    @Test
+    public void testEjecutarTurnoNormal() {
+        tablero.inicializarJugadores();
+        
+        // Primer turno
+        boolean resultado = tablero.ejecutarTurno(1);
+        assertFalse(resultado);
+        
+        String output = outContent.toString();
+        assertTrue(output.contains("Turno del jugador 1"));
+        assertTrue(output.contains("Has caído en una casilla normal"));
+        
+        Jugador jugador1 = ListaJugadores.getListaJugadores().getJugador(0);
+        assertEquals(4, jugador1.getIdCasillaPosicion()); // 1 + valor Dado 3
+    }
+
+    @Test
+    public void testEjecutarTurnoConGanador() {
+        tablero.inicializarJugadores();
+        Jugador jugador1 = ListaJugadores.getListaJugadores().getJugador(1);
+        jugador1.setIdCasillaPosicion(61); // One move from winning
+        
+        // Set dice to exact value needed to win
+        Dado.getDado().setValorFijado(3); // 61 + 3 = 64 (win)
+        
+        boolean resultado = tablero.ejecutarTurno(1);
+        assertTrue(resultado);
+        
+        String output = outContent.toString();
+        assertTrue(output.contains("Turno del jugador 1"));
+    }
+
+    @Test
+    public void testFinalizarPartidaConGanador() {
+        tablero.inicializarJugadores();
+        ListaJugadores.getListaJugadores().getJugador(0).setIdCasillaPosicion(64); // Force win
+        
+        tablero.finalizarPartida(true);
+        
+        String output = outContent.toString();
+        assertTrue(output.contains("¡Fin de la partida! Ha ganado Jugador 1"));
+        assertTrue(output.contains("+------+------+")); // Board printing
+    }
+
+    @Test
+    public void testFinalizarPartidaSinGanador() {
+        tablero.finalizarPartida(false);
+        
+        String output = outContent.toString();
+        assertTrue(output.contains("Fin de la partida Se ha superado el número de turnos."));
+    }
+
+    @Test
+    public void testJugarPartidaCompletaSinGanador() {
+        // Setup fixed small moves that won't reach the end
+        Dado.getDado().setFixedValue(1);
+        
+        tablero.jugarPartida();
+        
+        String output = outContent.toString();
+        assertTrue(output.contains("Fin de la partida Se ha superado el número de turnos."));
+    }
+}
+     
 
     @Test
     public void testImprimirTablero()
