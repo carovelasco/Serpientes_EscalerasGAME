@@ -240,9 +240,16 @@ public class TableroTest {
      
 
     @Test
-    public void testImprimirTablero()
-    {
-       tablero.crearTableroBasico();
-       tablero.imprimirTablero();
-    }
+    @Test
+public void testImprimirTablero() {
+    tablero.crearTableroBasico();
+    tablero.imprimirTablero();
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("+------+")); 
+    assertTrue(output.contains("64"));    
+    assertTrue(output.contains("1"));       
+    assertTrue(output.contains("4"));      
+    assertTrue(output.contains("16"));       
+}
 }
