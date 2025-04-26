@@ -148,50 +148,109 @@ public class Tablero {
             }
         }
     }
+
+
+    
     public void cargarTableroDesdeArchivo(String pNombreArchivo) {
         this.asignarIdACasillasMadre();
-
-        //para poder usar ruta relativa y no absoluta 
+        
+        //para poder usar ruta relativa y no absoluta
         String dirActual = System.getProperty("user.dir");
         String pathArchivoTablero = dirActual + File.separator + pNombreArchivo;
-
+        
+        boolean formatoValido = true;
+        
         try {
             InputStream fichero = new FileInputStream(pathArchivoTablero);
             Scanner sc = new Scanner(fichero);
             
-            while (sc.hasNextLine()) {//recorre cada linea del archivo
+            while (sc.hasNextLine() && formatoValido) {
                 String linea = sc.nextLine();
-                if (linea.isEmpty() || linea.startsWith("#")) {// trim es metodo de la clase String de java
+                // Ignorar líneas vacías o comentarios
+                if (linea.isEmpty() || linea.startsWith("#")) {
                     continue;
                 }
-
-                String[] datos = linea.split(",");
-
-                if (datos.length >= 3) {
-                    String pTipoCasilla = datos[0].trim();
-                    //al leer del archivo es tipo string, con parseint se hace tipo int
-                    int pIdCasilla = Integer.parseInt(datos[1].trim());
-                    int pIdCasillaDestino = Integer.parseInt(datos[2].trim());
-                    
-                    String textoImprimir = "";
-                    if (datos.length > 3) { //en caso de que agreguen su propio texto 
-                        textoImprimir = datos[3].trim();
+                
+                String[] datos = linea.split(",");// dividir segun las comas
+                
+                if (datos.length < 3) {// debe haber 3 campos
+                    System.out.println("Error de formato: la línea no tiene los 3 campos requeridos: " + linea);
+                    formatoValido = false;
+                    continue;
+                }
+                
+                try {
+                    String pTipoCasilla = datos[0].trim().toUpperCase(); // Revisar que el tipo de casilla se llame como deberia
+                    if (!pTipoCasilla.equals("SERPIENTE") && !pTipoCasilla.equals("ESCALERA") && 
+                        !pTipoCasilla.equals("ALINICIO") && !pTipoCasilla.equals("CASIFIN")) {
+                        System.out.println("Error: tipo de casilla no válido: " + pTipoCasilla);
+                        formatoValido = false;
+                        continue;
                     }
                     
-                    //modifica de casilla normal a casilla especial 
-                    this.setCasillaEspecial(pIdCasilla, pTipoCasilla, pIdCasillaDestino);
+                    int pIdCasilla = Integer.parseInt(datos[1].trim());// convertir el numero en string a entero 
+                    int pIdCasillaDestino = Integer.parseInt(datos[2].trim());
+                    
+                    if (pIdCasilla < 1 || pIdCasilla > 64 || pIdCasillaDestino < 1 || pIdCasillaDestino > 64) {//checar que si este dentro de 1-64
+                        System.out.println("Error: ID de casilla fuera de rango (1-64): " + pIdCasilla + ", " + pIdCasillaDestino);
+                        formatoValido = false;
+                        continue;
+                    }
+                    
+                    // que tenga sentido subir o bajar 
+                    if (pTipoCasilla.equals("SERPIENTE") && pIdCasillaDestino >= pIdCasilla) {
+                        System.out.println("Error: una serpiente debe llegar a una casilla con ID menor: " + pIdCasilla + " -> " + pIdCasillaDestino);
+                        formatoValido = false;
+                        continue;
+                    }
+                    
+                    if (pTipoCasilla.equals("ESCALERA") && pIdCasillaDestino <= pIdCasilla) {
+                        System.out.println("Error: una escalera debe llevar a una casilla con ID mayor: " + pIdCasilla + " -> " + pIdCasillaDestino);
+                        formatoValido = false;
+                        continue;
+                    }
+                    
+                    if (pTipoCasilla.equals("ALINICIO") && pIdCasillaDestino != 1) {
+                        System.out.println("Error: Casilla AlInicio siempre debe llevarte a casilla 1: ");
+                        formatoValido = false;
+                        continue;
+                    }
+                    
+                    if (pTipoCasilla.equals("CASIFIN") && pIdCasillaDestino != 62) {
+                        System.out.println("Error: Casilla CasiFin siempre debe llevarte a casilla 62: ");
+                        formatoValido = false;
+                        continue;
+                    }
+                    
+                    // Si llega aquí, todo es correcto
+                    if (formatoValido) {
+                        this.setCasillaEspecial(pIdCasilla, pTipoCasilla, pIdCasillaDestino);
+                    }
+                    
+                } catch (NumberFormatException e) {
+                    System.out.println("Error: los IDs de casillas deben ser números ");
+                    formatoValido = false;
                 }
             }
-
+            
             sc.close();
-            System.out.println("Tablero cargado correctamente desde el archivo");
+            
+            if (formatoValido) {
+                System.out.println("Tablero cargado correctamente desde el archivo");
+            } else {
+                System.out.println("Se encontraron errores en el formato del archivo, se creará un tablero automático");
+                this.crearTableroBasico();
+            }
             
         } catch (Exception e) {
-            System.out.println("Error al abrir el archivo: " + e.getMessage());
-            System.out.println("Se creara tablero automatico");
+            System.out.println("Error al abrir o procesar el archivo: " + e.getMessage());
+            System.out.println("Se creará tablero automático");
             this.crearTableroBasico();
         }
     }
+
+
+
 
     public void imprimirTablero() {
         System.out.println("------------------------------------------------------");
