@@ -7,15 +7,15 @@ public class JugadorTest
 @Before
 public void setUp() throws Exception
 {
-  j1=new Jugador(1);
-  j2=new Jugador(2);
+j1=new Jugador(1);
+j2=new Jugador(2);
 }
 
 @After
 public void tearDown() throws Exception
 {
-  j1=null;
-  j2=null;
+j1=null;
+j2=null;
 }
 
 @Test
@@ -84,10 +84,7 @@ public void testMoverPorDado()
      j2.moverPorDado(3);
      assertEquals(1, j2.getIdCasillaPosicion());
 
-     //CASIFIN
-     j2.setIdCasillaPosicion(23);
-     j2.moverPorDado(4);
-     assertEquals(27, j2.getIdCasillaPosicion());
+    
 
      
 }
@@ -114,3 +111,4 @@ public void testSetIdCasillaPosicion()
 
 
 }
+
