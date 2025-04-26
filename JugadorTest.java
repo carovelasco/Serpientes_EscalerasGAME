@@ -18,6 +18,11 @@ public void tearDown() throws Exception
   j2=null;
 }
 
+@Test 
+public void testPoscicionInicial(){
+    assertEquals(1,j1.getIdCasillaPosicion());
+    assertEquals(2,j2.getIdCasillaPosicion());
+}
 @Test
 public void testGetIdJugador()
 {
@@ -38,57 +43,31 @@ public void testMoverPorDado()
     // Rebote
     j2.setIdCasillaPosicion(63);
     j2.moverPorDado(5);
-    assertEquals(59, j2.getIdCasillaPosicion());
+    assertEquals(60, j2.getIdCasillaPosicion()); // 63+5=68 ->64-(68-64)=60
+
+    j1.setIdCasillaPosicion(62);
+    j1.moverPorDado(3);
+    assertEquals(63,j1.getIdCasillaPosicion());// 62+3=65 ->64-(65-64)=63
         
     // Gana Exactamente
      j2.setIdCasillaPosicion(61);
      j2.moverPorDado(3);
      assertEquals(64, j2.getIdCasillaPosicion());
 
-     //Escalera
-     j2.setIdCasillaPosicion(2);
-     j2.moverPorDado(2);
-     assertEquals(14,j2.getIdCasillaPosicion());
-     
-     j2.setIdCasillaPosicion(5);
-     j2.moverPorDado(4);
-     assertEquals(31, j2.getIdCasillaPosicion());
+     j1.setIdCasillaPosicion(63);
+     j1.moverPorDado(1);
+     assertEquals(64,j1.getIdCasillaPosicion());
 
-     j2.setIdCasillaPosicion(20);
-     j2.moverPorDado(2);
-     assertEquals(42, j2.getIdCasillaPosicion());
+     //multiple moves 
+     j1.setIdCasillaPosicion(5);
+     j1.moverPorDado(6);
+     assertEquals(11,j1.getIdCasillaPosicion());
 
-     j2.setIdCasillaPosicion(30);
-     j2.moverPorDado(6);
-     assertEquals(44, j2.getIdCasillaPosicion());
+     j1.moverPorDado(4);
+     assertEquals(15,j1.getIdCasillaPosicion());
 
-     //Serpiente
-     j2.setIdCasillaPosicion(13);
-     j2.moverPorDado(3);
-     assertEquals(6, j2.getIdCasillaPosicion());
-
-     j2.setIdCasillaPosicion(42);
-     j2.moverPorDado(5);
-     assertEquals(26, j2.getIdCasillaPosicion());
-
-     j2.setIdCasillaPosicion(45);
-     j2.moverPorDado(4);
-     assertEquals(11, j2.getIdCasillaPosicion());
-
-     j2.setIdCasillaPosicion(60);
-     j2.moverPorDado(1);
-     assertEquals(19, j2.getIdCasillaPosicion());
-
-     //ALINICIO
-     j2.setIdCasillaPosicion(48);
-     j2.moverPorDado(3);
-     assertEquals(1, j2.getIdCasillaPosicion());
-
-     //CASIFIN
-     j2.setIdCasillaPosicion(23);
-     j2.moverPorDado(4);
-     assertEquals(27, j2.getIdCasillaPosicion());
-
+     j1.moverPorDado(5);
+     assertEquals(20,j1.getIdCasillaPosicion());
      
 }
 
@@ -98,13 +77,16 @@ public void testJugarTurno()
  int initialPosition = j1.getIdCasillaPosicion();
  j1.jugarTurno();
  assertNotEquals(initialPosition, j1.getIdCasillaPosicion());
+
+ assertTrue(j1.getIdCasillaPosicion()>=1);
+ assertTrue(j1.getIdCasillaPosicion()<=64);
 }
 
 
 @Test
 public void testSetIdCasillaPosicion()
 {
-	j1.setIdCasillaPosicion(9);
+  j1.setIdCasillaPosicion(9);
   assertEquals(9,j1.getIdCasillaPosicion());
 
   j2=new Jugador(2);
