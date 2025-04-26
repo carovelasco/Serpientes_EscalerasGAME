@@ -27,7 +27,16 @@ public class Dado {
     //Para Pruebas
     public void setValorDado(int Valor)
     {
+        if(valor<1||valor>6)
+        {
+            throw new IllegalArgumentException("El Valor debe estar entre 1 y 6.");
+        }
         this.valorFijado= Valor;
+    }
+
+    public void resetToRandom()
+    {
+        this.valorFijado=-1;
     }
     public static void reiniciar()
     {
