@@ -80,7 +80,7 @@ public class Tablero {
 
     
     //metodos auxiliares a otros metodos
-    private void asignarIdACasillasMadre() {
+     private void asignarIdACasillasMadre() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 int idCasilla = calcularIdCasilla(i, j);
@@ -253,25 +253,16 @@ public class Tablero {
 
 
 
-
-    public void imprimirTablero() {
-        System.out.println("------------------------------------------------------");
-        for (int i = 0; i < 8; i++) {
-            if (i %2 ==0){
-                
-            for (int j = 0; j < 8; j++) {
-                System.out.print(tablero[i][j].getIdCasilla() + "\t");
-            }
-            }
-            else{
-                for(int j=7; j>=0; j--){
-                    System.out.println(tablero[i][j].getIdCasilla()+"\t");
-                }
-            }
-            System.out.println();
-            System.out.println("+------+------+------+------+------+------+-------+---------+");
+public void imprimirTablero() {
+    System.out.println("-------------------------------------------------------------");
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            System.out.print( tablero[i][j].getIdCasilla() + "\t");
         }
+        System.out.println();
+        System.out.println("+------+------+------+------+------+------+-------+---------+");
     }
+}
 
     
 }
