@@ -15,6 +15,11 @@ public class ListaJugadores {
         return miListaJugadores;
     }
     
+    //solo para pruebas
+    public ArrayList<Jugador> getJugadores(){
+    	return this.lista;
+    }
+    
     public void añadirJugador(Jugador pJugador) {
         this.lista.add(pJugador);
     }
@@ -32,8 +37,10 @@ public class ListaJugadores {
         if (jugadorActual.getIdCasillaPosicion() == 64) {
             return true;
         }
-        
         return false;
+    }
+    public static void reiniciar(){
+        miListaJugadores=null;
     }
 }
 
