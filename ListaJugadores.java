@@ -37,7 +37,10 @@ public class ListaJugadores {
         if (jugadorActual.getIdCasillaPosicion() == 64) {
             return true;
         }
-        return false;
+        else
+        {
+            return false;
+        }
     }
     public static void reiniciar(){
         miListaJugadores=null;
