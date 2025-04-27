@@ -1,0 +1,56 @@
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+public class CasillaMadreTest {
+    private CasillaMadre casilla;
+    private Jugador jugador;
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
+
+    @Before
+    public void setUp() {
+        // Redirect System.out to capture printed messages
+        System.setOut(new PrintStream(outContent));
+        
+        // Create test objects
+        casilla = new CasillaMadre(5, "Test message");
+        jugador = new Jugador(1);
+    }
+
+    @After
+    public void tearDown() {
+        // Restore System.out
+        System.setOut(originalOut);
+    }
+
+   
+
+    @Test
+    public void testRealizarAccion_ChangesPlayerPosition() {
+        // Initial position should be different from casilla ID
+        assertNotEquals(casilla.getIdCasilla(), jugador.getIdCasillaPosicion());
+        
+        casilla.realizarAccion(jugador);
+        
+        assertEquals(casilla.getIdCasilla(), jugador.getIdCasillaPosicion());
+    }
+
+    @Test
+    public void testRealizarAccion_PrintsMessage() {
+        casilla.realizarAccion(jugador);
+        assertEquals("Test message" + System.lineSeparator(), outContent.toString());
+    }
+
+    @Test
+    public void testImprimirTexto_ProtectedMethod() {
+        // Test protected method via reflection if needed, or through realizarAccion()
+        casilla.realizarAccion(jugador); // This calls imprimirTexto()
+        assertEquals("Test message" + System.lineSeparator(), outContent.toString());
+    }
+
+   
+}
