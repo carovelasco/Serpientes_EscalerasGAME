@@ -45,46 +45,39 @@ public class Tablero {
         System.out.println("Tablero básico automatico creado");
     } 
 
-    //metodo principal para jugar partida
+      //metodo principal para jugar partida
     public void jugarPartida() {
-    inicializarJugadores();
-    int numTurnos = 1;
-    boolean comprobarGanador = false;
-    
-    while (!comprobarGanador && numTurnos < 51) {
-        comprobarGanador = ejecutarTurno(numTurnos);
-        numTurnos++;
+        Jugador Jugador1=new Jugador(1);
+        Jugador Jugador2=new Jugador(2);
+
+        ListaJugadores.getListaJugadores().añadirJugador(Jugador1);
+        ListaJugadores.getListaJugadores().añadirJugador(Jugador2);
+
+        int numTurnos = 1;
+        boolean comprobarGanador = false;
+        Jugador unJugador = null;
+
+        while (!comprobarGanador && numTurnos < 51) {
+            System.out.println(" ");
+            unJugador = ListaJugadores.getListaJugadores().pasarTurno();
+            System.out.println("_________________________Turno del jugador "+unJugador.getIdJugador()+"_________________________");
+            unJugador.jugarTurno();
+            comprobarGanador = ListaJugadores.getListaJugadores().comprobarGanador();
+            numTurnos = numTurnos + 1;
+        }
+        
+        if (comprobarGanador) {
+            System.out.println(" ");
+            System.out.println("¡Fin de la partida! Ha ganado " + "Jugador "+unJugador.getIdJugador());
+            this.imprimirTablero();
+
+        } else {
+            System.out.println(" ");
+            System.out.println("Fin de la partida Se ha superado el número de turnos.");
+        }
     }
-    
-    finalizarPartida(comprobarGanador);
-}
 
-private void inicializarJugadores() {
-    Jugador Jugador1 = new Jugador(1);
-    Jugador Jugador2 = new Jugador(2);
-    ListaJugadores.getListaJugadores().añadirJugador(Jugador1);
-    ListaJugadores.getListaJugadores().añadirJugador(Jugador2);
-}
 
-private boolean ejecutarTurno(int numTurno) {
-    System.out.println(" ");
-    Jugador unJugador = ListaJugadores.getListaJugadores().pasarTurno();
-    System.out.println("_________________________Turno del jugador "+unJugador.getIdJugador()+"_________________________");
-    unJugador.jugarTurno();
-    return ListaJugadores.getListaJugadores().comprobarGanador();
-}
-
-private void finalizarPartida(boolean comprobarGanador) {
-    if (comprobarGanador) {
-        Jugador ganador = ListaJugadores.getListaJugadores().getJugadorActual();
-        System.out.println(" ");
-        System.out.println("¡Fin de la partida! Ha ganado " + "Jugador "+ganador.getIdJugador());
-        this.imprimirTablero();
-    } else {
-        System.out.println(" ");
-        System.out.println("Fin de la partida Se ha superado el número de turnos.");
-    }
-}
     
     //metodos auxiliares a otros metodos
     private void asignarIdACasillasMadre() {
