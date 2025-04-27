@@ -108,6 +108,40 @@ public class ListaJugadoresTest {
     	Jugador desconocido = new Jugador(9);
         assertFalse(lista.getJugadores().contains(desconocido));
     }
+
+    @Test
+    public void testIntegrationWithTableroJugarPartida() {
+        Tablero.reiniciarParaPruebas();
+        Tablero tablero = Tablero.getTablero();
+        tablero.crearTableroBasico();
+        
+        // Inicialmente
+        assertEquals(2, lista.getJugadores().size());
+        
+        // un turno
+        Jugador jugadorActual = lista.pasarTurno();
+        
+        // Verificar rotacion en turno
+        assertEquals(jugador1, jugadorActual);
+        assertEquals(jugador2, lista.getJugadores().get(0));
+        assertEquals(jugador1, lista.getJugadores().get(1));
+        
+        // Condicion para ganar
+        jugador1.setIdCasillaPosicion(64);
+        assertTrue(lista.comprobarGanador());
+    }
+    
+    @Test
+    public void testReiniciarLista() {
+        lista.añadirJugador(jugador3);
+        assertEquals(3, lista.getJugadores().size());
+        
+        ListaJugadores.reiniciar();
+        ListaJugadores nuevaLista = ListaJugadores.getListaJugadores();
+        
+        assertEquals(0, nuevaLista.getJugadores().size());
+        assertNotSame(lista, nuevaLista);
+    }
     
     
     
