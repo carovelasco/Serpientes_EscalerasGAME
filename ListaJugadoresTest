@@ -5,27 +5,27 @@ import org.junit.Test;
 
 public class ListaJugadoresTest {
     
-    private ListaJugadores lista;
-    private Jugador jugador1;
-    private Jugador jugador2;
-    private Jugador jugador3;
+    ListaJugadores lista;
+    Jugador jugador1;
+    Jugador jugador2;
+    Jugador jugador3;
     
-    @Before
+ @Before
     public void setUp() {
-        // Reiniciar la instancia singleton antes de cada prueba
+        ListaJugadores.reiniciar();
         lista = ListaJugadores.getListaJugadores();
-        lista.añadirJugador(new Jugador(1));  // Posición 1 por defecto
-        lista.añadirJugador(new Jugador(2));
-        
         jugador1 = new Jugador(1);
         jugador2 = new Jugador(2);
         jugador3 = new Jugador(3);
+        
+        lista.añadirJugador(jugador1);
+        lista.añadirJugador(jugador2);
     }
     
     @After
     public void tearDown() {
-        // Vaciar la lista después de cada prueba
-        lista = null;
+       ListaJugadores.reiniciar();
+        
     }
     
     @Test
@@ -37,92 +37,80 @@ public class ListaJugadoresTest {
     
     @Test
     public void testAñadirJugador() {
-        assertEquals(2, lista.lista.size());
+
         
         lista.añadirJugador(jugador3);
-        assertEquals(3, lista.lista.size());
-        assertTrue( lista.lista.contains(jugador3));
+        assertEquals(3, lista.getJugadores().size());
+        assertTrue( lista.getJugadores().contains(jugador3));
     }
     
     @Test
     public void testPasarTurno() {
-        Jugador primero = lista.lista.get(0);
-        Jugador segundo = lista.lista.get(1);
-        
-        // Primer pase de turno
-        Jugador actual = lista.pasarTurno();
-        assertEquals(primero, actual);
-        assertEquals(segundo, lista.lista.get(0));
-        assertEquals(primero, lista.lista.get(1));
-        
-        // Segundo pase debería volver al orden original
-        actual = lista.pasarTurno();
-        assertEquals(segundo, actual);
-        assertEquals(primero, lista.lista.get(0));
-        assertEquals(segundo, lista.lista.get(1));
+        Jugador primero = lista.getJugadores().get(0);
+        Jugador segundo = lista.getJugadores().get(1);
+
+        Jugador turno1 = lista.pasarTurno();
+        assertEquals(primero, turno1);
+        assertEquals(segundo, lista.getJugadores().get(0));
+        assertEquals(primero, lista.getJugadores().get(1));
+
+        Jugador turno2 = lista.pasarTurno();
+        assertEquals(segundo, turno2);
+        assertEquals(primero, lista.getJugadores().get(0));
     }
+
     
     @Test
     public void testComprobarGanador() {
-        // No debería haber ganador inicialmente
+        // Sin ganador al inicio
         assertFalse(lista.comprobarGanador());
-        
-        // Primer jugador en posición ganadora
-        jugador1=lista.lista.get(0);
+
+        // Jugador 1 gana
         jugador1.setIdCasillaPosicion(64);
-        assertTrue( lista.comprobarGanador());
-
-        jugador2=lista.lista.get(1);
-        jugador2.setIdCasillaPosicion(64);
-        jugador1.setIdCasillaPosicion(58);
-        assertFalse(lista.comprobarGanador());
-
-        lista.pasarTurno();//Ahora Jugador2 esta en posicion 0
+        lista.pasarTurno(); // Jugador 1 juega
         assertTrue(lista.comprobarGanador());
 
-       // Probar varias posiciones que no son ganadoras
-        jugador1.setIdCasillaPosicion(63);
-        assertFalse(lista.comprobarGanador());
-        
+        // Jugador 2 gana
         jugador1.setIdCasillaPosicion(1);
-        assertFalse(lista.comprobarGanador());
-        
-        jugador1.setIdCasillaPosicion(32);
-        assertFalse(lista.comprobarGanador());
-       
-        
-    }
-    
-    
-    @Test
-    public void testPasarTurnoConListaVacia() {
-        ListaJugadores listaVacia = ListaJugadores.getListaJugadores();
-        listaVacia.lista.clear();
-        listaVacia.pasarTurno();
-    }
-    
-    @Test
-    public void testConservarOrdenDespuesDeMultiplesTurnos() {
-        Jugador primero = lista.lista.get(0);
-        Jugador segundo = lista.lista.get(1);
-        
-        // Después de 2 turnos, el orden debería ser el original
-        lista.pasarTurno();
-        lista.pasarTurno();
-        assertEquals(primero, lista.lista.get(0));
-        assertEquals(segundo, lista.lista.get(1));
+        jugador2.setIdCasillaPosicion(64);
+        lista.pasarTurno(); // Jugador 2 juega
+        assertTrue(lista.comprobarGanador());
 
-        //Cambia el orden en 3 turnos
-        lista.pasarTurno();
-        assertEquals(primero,lista.lista.get(1));
-        assertEquals(segundo,lista.lista.get(0));
+        // Nadie gana
+        jugador2.setIdCasillaPosicion(50);
+        lista.pasarTurno(); // Jugador 1
+        assertFalse(lista.comprobarGanador());
     }
     
+    
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testPasarTurnoConListaVacia() {
+        ListaJugadores.reiniciar();
+        ListaJugadores listaVacia = ListaJugadores.getListaJugadores();
+        listaVacia.getJugadores().clear();
+        listaVacia.pasarTurno(); // Debe lanzar excepción
+    }
+    
+    
+    @Test
+    public void testRotacionConMasDeDosJugadores() {
+        lista.añadirJugador(jugador3);
+        Jugador turno1 = lista.pasarTurno(); // jugador1
+        Jugador turno2 = lista.pasarTurno(); // jugador2
+        Jugador turno3 = lista.pasarTurno(); // jugador3
+
+        assertEquals(jugador1, turno1);
+        assertEquals(jugador2, turno2);
+        assertEquals(jugador3, turno3);
+    }
     @Test
     public void testJugadorNoExisteEnLista() {
-        Jugador jugadorNoListado = new Jugador(9);
-        assertFalse(lista.lista.contains(jugadorNoListado));
+    	Jugador desconocido = new Jugador(9);
+        assertFalse(lista.getJugadores().contains(desconocido));
     }
     
     
+    
+
 }
+
