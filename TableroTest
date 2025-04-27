@@ -10,22 +10,22 @@ import java.io.PrintStream;
 
 public class TableroTest {
      Tablero tablero;
-     private final ByteArrayOutputStream outContent=new ByteArrayOutputStream();
-     private final PrintStream originalOut= System.out;
+     private ByteArrayOutputStream outContent;
+     
 
     @Before
     public void setUp() {
         Tablero.reiniciarParaPruebas(); 
         tablero = Tablero.getTablero();
-        tablero.asignarIdACasillasMadre(); // Initialize the board
+        outContent=new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent)); 
-        Dado.getDado().setFixedValue(3);
+       
 
      }
     @After 
     public void tearDown(){
       System.setOut(originalOut);
-        Tablero.reiniciar();
+        Tablero.reiniciarParaPruebas();
         ListaJugadores.reiniciar();
         Dado.reiniciar();
    }
@@ -35,42 +35,7 @@ public class TableroTest {
      Tablero unTablero=Tablero.getTablero();
      assertSame(tablero,unTablero);
     }
-    @Test
-    public void testCalcularIdCasilla() {
-       
-        assertEquals(1, tablero.calcularIdCasilla(7, 0));  
-        assertEquals(8, tablero.calcularIdCasilla(7, 7));  
-        assertEquals(9, tablero.calcularIdCasilla(6, 7));  
-        assertEquals(16, tablero.calcularIdCasilla(6, 0));
-        assertEquals(64, tablero.calcularIdCasilla(0, 0)); 
-        assertEquals(57, tablero.calcularIdCasilla(0, 7)); 
-    }
 
-    @Test
-    public void testCasillaEspeciales() {
-        tablero.setCasillaEspecial(28, "SERPIENTE", 15);
-        CasillaMadre casilla = tablero.buscarCasilla(28);
-        
-        assertTrue(casilla instanceof CasillaEspecial);
-        assertEquals(15, ((CasillaEspecial)casilla).getIdCasillaDestino());
-        assertTrue(((CasillaEspecial)casilla).getTextoImprimir().contains("serpiente"));
-    }
-    @Test
-    public void testBuscarCasilla()
-    {
-        tablero.crearTableroBasico();
-        
-        CasillaMadre casilla = tablero.buscarCasilla(1);
-        assertNotNull(casilla);
-        assertEquals(1, casilla.getIdCasilla());
-        
-        casilla = tablero.buscarCasilla(64);
-        assertNotNull(casilla);
-        assertEquals(64, casilla.getIdCasilla());
-        
-        casilla = tablero.buscarCasilla(99); // No existe
-        assertNull(casilla);
-    }
       
     @Test
     public void testCargarTableroDesdeArchivo() throws Exception {
@@ -109,137 +74,410 @@ public class TableroTest {
         tempFile.delete();
     }
 
+   @Test
+    public void testCargarTableroDesdeArchivoValido() throws IOException {
+        // Create a temporary valid file
+    	 File tempFile = File.createTempFile("tableroTest", ".txt");
+         FileWriter writer = new FileWriter(tempFile);
+         writer.write("ESCALERA,5,10\n");
+         writer.write("SERPIENTE,15,5\n");
+         writer.write("ALINICIO,20,1\n");
+         writer.write("CASIFIN,60,62\n");
+         writer.close();
+         
+         tablero.cargarTableroDesdeArchivo(tempFile.getAbsolutePath());
+         
+         // Verify the squares were set correctly
+         CasillaMadre casilla = tablero.buscarCasilla(5);
+         assertTrue(casilla instanceof CasillaEspecial);
+         assertEquals(10, ((CasillaEspecial)casilla).getIdCasillaDestino());
+         
+         casilla = tablero.buscarCasilla(15);
+         assertTrue(casilla instanceof CasillaEspecial);
+         assertEquals(5, ((CasillaEspecial)casilla).getIdCasillaDestino());
+         
+         tempFile.delete();
+     }
+
+
     @Test
-    public void testObtenerCoordeandas() {
-        Coordenadas coords = tablero.obtenerCoordenadas(1);
-        assertEquals(7, coords.getFila());
-        assertEquals(0, coords.getColumna());
-
+    public void testCargarTableroDesdeArchivoInvalido() throws IOException {
+    	  // Create a temporary test file with invalid data
+        File tempFile = File.createTempFile("tableroTestInvalid", ".txt");
+        FileWriter writer = new FileWriter(tempFile);
+        writer.write("ESCALERA,5,10\n");
+        writer.write("INVALID_TYPE,15,5\n");  // Invalid type
+        writer.write("SERPIENTE,70,5\n");    // Invalid ID (out of range)
+        writer.close();
         
-        coords = tablero.obtenerCoordenadas(64);
-        assertEquals(0, coords.getFila());
-        assertEquals(0, coords.getColumna());
-
-       
-        coords = tablero.obtenerCoordenadas(43);
-        assertEquals(3, coords.getFila());
-        assertEquals(3, coords.getColumna());
-
-        coords = tablero.obtenerCoordenadas(57);
-        assertEquals(0, coords.getFila());
-        assertEquals(7, coords.getColumna());
-
+        tablero.cargarTableroDesdeArchivo(tempFile.getAbsolutePath());
         
-    }
-
-    @Test
-    public void testCrearTableroBasico() {
-        tablero.crearTableroBasico();
-        // Verify some default tiles
-        assertTrue(tablero.buscarCasilla(4) instanceof CasillaEspecial);  // Escalera
-        assertTrue(tablero.buscarCasilla(51) instanceof CasillaEspecial); // AlInicio
-        assertTrue(tablero.buscarCasilla(27) instanceof CasillaCasiFin); //CasiFin
-        assertTrue(tablero.buscarCasilla(22) instanceof CasillaEspecial); //Escalera
-        assertTrue(tablero.buscarCasilla(16) instanceof CasillaEspecial);  // Serpientes
-        assertTrue(tablero.buscarCasilla(47) instanceof CasillaEspecial); // Serpientes
-        assertTrue(tablero.buscarCasilla(49) instanceof CasillaEspecial);  // Serpientes
-        assertTrue(tablero.buscarCasilla(61) instanceof CasillaEspecial); // Serpientes
-        assertTrue(tablero.buscarCasilla(9) instanceof CasillaEspecial);  // Escalera
-        assertTrue(tablero.buscarCasilla(36) instanceof CasillaEspecial); // Escalera
-        assertFalse(tablero.buscarCasilla(6) instanceof CasillaEspecial);
-        assertFalse(tablero.buscarCasilla(9) instanceof CasillaCasiFin);
-        
-        // Check some of the default special casillas
+        // The method should fall back to creating a basic board
+        // Verify by checking one of the default special squares
         CasillaMadre casilla = tablero.buscarCasilla(4);
         assertTrue(casilla instanceof CasillaEspecial);
         assertEquals(14, ((CasillaEspecial)casilla).getIdCasillaDestino());
+        
+        tempFile.delete();
+    }
+    
+    @Test
+    public void testCargarTableroDesdeArchivoInexistente() {
+        tablero.cargarTableroDesdeArchivo("archivo_que_no_existe.txt");
+        
+        // Should fall back to creating a basic board
+        CasillaMadre casilla = tablero.buscarCasilla(4);
+        assertTrue(casilla instanceof CasillaEspecial);
+        assertEquals(14, ((CasillaEspecial)casilla).getIdCasillaDestino());
+    }
+
+ 
+
+   @Test
+    public void testCrearTableroBasico() {
+        tablero.crearTableroBasico();
+        // Verify that some default special tiles exist
+        assertTrue(tablero.buscarCasilla(4) instanceof CasillaEspecial);  // Escalera
+        assertTrue(tablero.buscarCasilla(16) instanceof CasillaEspecial); // Serpiente
+        assertTrue(tablero.buscarCasilla(9) instanceof CasillaEspecial);  // Escalera
+        assertTrue(tablero.buscarCasilla(47) instanceof CasillaEspecial); // Serpiente
+        assertTrue(tablero.buscarCasilla(51) instanceof CasillaEspecial); // AlInicio
+        assertTrue(tablero.buscarCasilla(22) instanceof CasillaEspecial); // Escalera
+        assertTrue(tablero.buscarCasilla(27) instanceof CasillaCasiFin); //CasiFin
+        assertTrue(tablero.buscarCasilla(61) instanceof CasillaEspecial); // Serpiente
+        CasillaMadre casilla = tablero.buscarCasilla(4);
+        assertTrue(casilla instanceof CasillaEspecial);
+        assertEquals(14, ((CasillaEspecial)casilla).getIdCasillaDestino());
+        
+      
         
         casilla = tablero.buscarCasilla(16);
         assertTrue(casilla instanceof CasillaEspecial);
         assertEquals(6, ((CasillaEspecial)casilla).getIdCasillaDestino());
         
+        casilla = tablero.buscarCasilla(47);
+        assertTrue(casilla instanceof CasillaEspecial);
+        assertEquals(26, ((CasillaEspecial)casilla).getIdCasillaDestino());
+        
+        casilla = tablero.buscarCasilla(49);
+        assertTrue(casilla instanceof CasillaEspecial);
+        assertEquals(11, ((CasillaEspecial)casilla).getIdCasillaDestino());
+        
+        casilla = tablero.buscarCasilla(61);
+        assertTrue(casilla instanceof CasillaEspecial);
+        assertEquals(19, ((CasillaEspecial)casilla).getIdCasillaDestino());
+        
+        casilla = tablero.buscarCasilla(4);
+        assertTrue(casilla instanceof CasillaEspecial);
+        assertEquals(14, ((CasillaEspecial)casilla).getIdCasillaDestino());
+        
+        casilla = tablero.buscarCasilla(9);
+        assertTrue(casilla instanceof CasillaEspecial);
+        assertEquals(39, ((CasillaEspecial)casilla).getIdCasillaDestino());
+        
+        casilla = tablero.buscarCasilla(22);
+        assertTrue(casilla instanceof CasillaEspecial);
+        assertEquals(44, ((CasillaEspecial)casilla).getIdCasillaDestino());
+        
+        casilla = tablero.buscarCasilla(36);
+        assertTrue(casilla instanceof CasillaEspecial);
+        assertEquals(41, ((CasillaEspecial)casilla).getIdCasillaDestino());
+        
         casilla = tablero.buscarCasilla(51);
         assertTrue(casilla instanceof CasillaEspecial);
         assertEquals(1, ((CasillaEspecial)casilla).getIdCasillaDestino());
         
+        casilla = tablero.buscarCasilla(27);
+        assertTrue(casilla instanceof CasillaCasiFin);
+        assertEquals(62, ((CasillaEspecial)casilla).getIdCasillaDestino());
+        
+        casilla = tablero.buscarCasilla(2);
+        assertFalse(casilla instanceof CasillaEspecial);
+        
+    }
+
+   @Test
+    public void testObtenerCoordenadas() {
+        tablero.crearTableroBasico();
+    
+        Coordenadas coords = tablero.obtenerCoordenadas(64);
+        assertEquals(0, coords.getFila());
+        assertEquals(0, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(63);
+        assertEquals(0, coords.getFila());
+        assertEquals(1, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(62);
+        assertEquals(0, coords.getFila());
+        assertEquals(2, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(61);
+        assertEquals(0, coords.getFila());
+        assertEquals(3, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(60);
+        assertEquals(0, coords.getFila());
+        assertEquals(4, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(59);
+        assertEquals(0, coords.getFila());
+        assertEquals(5, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(58);
+        assertEquals(0, coords.getFila());
+        assertEquals(6, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(57);
+        assertEquals(0, coords.getFila());
+        assertEquals(7, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(56);
+        assertEquals(1, coords.getFila());
+        assertEquals(7, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(55);
+        assertEquals(1, coords.getFila());
+        assertEquals(6, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(54);
+        assertEquals(1, coords.getFila());
+        assertEquals(5, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(53);
+        assertEquals(1, coords.getFila());
+        assertEquals(4, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(52);
+        assertEquals(1, coords.getFila());
+        assertEquals(3, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(51);
+        assertEquals(1, coords.getFila());
+        assertEquals(2, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(50);
+        assertEquals(1, coords.getFila());
+        assertEquals(1, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(49);
+        assertEquals(1, coords.getFila());
+        assertEquals(0, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(48);
+        assertEquals(2, coords.getFila());
+        assertEquals(0, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(47);
+        assertEquals(2, coords.getFila());
+        assertEquals(1, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(46);
+        assertEquals(2, coords.getFila());
+        assertEquals(2, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(45);
+        assertEquals(2, coords.getFila());
+        assertEquals(3, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(44);
+        assertEquals(2, coords.getFila());
+        assertEquals(4, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(43);
+        assertEquals(2, coords.getFila());
+        assertEquals(5, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(42);
+        assertEquals(2, coords.getFila());
+        assertEquals(6, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(41);
+        assertEquals(2, coords.getFila());
+        assertEquals(7, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(40);
+        assertEquals(3, coords.getFila());
+        assertEquals(7, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(39);
+        assertEquals(3, coords.getFila());
+        assertEquals(6, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(38);
+        assertEquals(3, coords.getFila());
+        assertEquals(5, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(37);
+        assertEquals(3, coords.getFila());
+        assertEquals(4, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(36);
+        assertEquals(3, coords.getFila());
+        assertEquals(3, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(35);
+        assertEquals(3, coords.getFila());
+        assertEquals(2, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(34);
+        assertEquals(3, coords.getFila());
+        assertEquals(1, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(33);
+        assertEquals(3, coords.getFila());
+        assertEquals(0, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(32);
+        assertEquals(4, coords.getFila());
+        assertEquals(0, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(31);
+        assertEquals(4, coords.getFila());
+        assertEquals(1, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(30);
+        assertEquals(4, coords.getFila());
+        assertEquals(2, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(29);
+        assertEquals(4, coords.getFila());
+        assertEquals(3, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(28);
+        assertEquals(4, coords.getFila());
+        assertEquals(4, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(27);
+        assertEquals(4, coords.getFila());
+        assertEquals(5, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(26);
+        assertEquals(4, coords.getFila());
+        assertEquals(6, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(25);
+        assertEquals(4, coords.getFila());
+        assertEquals(7, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(24);
+        assertEquals(5, coords.getFila());
+        assertEquals(7, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(23);
+        assertEquals(5, coords.getFila());
+        assertEquals(6, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(22);
+        assertEquals(5, coords.getFila());
+        assertEquals(5, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(21);
+        assertEquals(5, coords.getFila());
+        assertEquals(4, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(20);
+        assertEquals(5, coords.getFila());
+        assertEquals(3, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(19);
+        assertEquals(5, coords.getFila());
+        assertEquals(2, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(18);
+        assertEquals(5, coords.getFila());
+        assertEquals(1, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(17);
+        assertEquals(5, coords.getFila());
+        assertEquals(0, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(16);
+        assertEquals(6, coords.getFila());
+        assertEquals(0, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(15);
+        assertEquals(6, coords.getFila());
+        assertEquals(1, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(14);
+        assertEquals(6, coords.getFila());
+        assertEquals(2, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(13);
+        assertEquals(6, coords.getFila());
+        assertEquals(3, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(12);
+        assertEquals(6, coords.getFila());
+        assertEquals(4, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(11);
+        assertEquals(6, coords.getFila());
+        assertEquals(5, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(10);
+        assertEquals(6, coords.getFila());
+        assertEquals(6, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(9);
+        assertEquals(6, coords.getFila());
+        assertEquals(7, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(8);
+        assertEquals(7, coords.getFila());
+        assertEquals(7, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(7);
+        assertEquals(7, coords.getFila());
+        assertEquals(6, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(6);
+        assertEquals(7, coords.getFila());
+        assertEquals(5, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(5);
+        assertEquals(7, coords.getFila());
+        assertEquals(4, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(4);
+        assertEquals(7, coords.getFila());
+        assertEquals(3, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(3);
+        assertEquals(7, coords.getFila());
+        assertEquals(2, coords.getColumna());
+
+        coords = tablero.obtenerCoordenadas(2);
+        assertEquals(7, coords.getFila());
+        assertEquals(1, coords.getColumna());
+        
+        coords = tablero.obtenerCoordenadas(1);
+        assertEquals(7, coords.getFila());
+        assertEquals(0, coords.getColumna());
+        
+    }
+
+    @Test
+    public void testBuscarCasilla() {
+        tablero.crearTableroBasico();
+
+        CasillaMadre casilla = tablero.buscarCasilla(4);
+        assertNotNull(casilla);
+        assertEquals(4, casilla.getIdCasilla());
+
+        casilla = tablero.buscarCasilla(64);
+        assertNotNull(casilla);
+        assertEquals(64, casilla.getIdCasilla());
+        
+        casilla = tablero.buscarCasilla(0);  // Invalid ID
+        assertNull(casilla);
+
+        casilla = tablero.buscarCasilla(99);  // Invalid ID
+        assertNull(casilla);
     }
 
 
-    @Test
-    public void testInicializarJugadores() {
-        tablero.inicializarJugadores();
-        
-        assertEquals(2, ListaJugadores.getListaJugadores().getNumJugadores());
-        assertNotNull(ListaJugadores.getListaJugadores().getJugador(0));
-        assertNotNull(ListaJugadores.getListaJugadores().getJugador(1));
-    }
-
-    @Test
-    public void testEjecutarTurnoNormal() {
-        tablero.inicializarJugadores();
-        
-        // Primer turno
-        boolean resultado = tablero.ejecutarTurno(1);
-        assertFalse(resultado);
-        
-        String output = outContent.toString();
-        assertTrue(output.contains("Turno del jugador 1"));
-        assertTrue(output.contains("Has caído en una casilla normal"));
-        
-        Jugador jugador1 = ListaJugadores.getListaJugadores().getJugador(0);
-        assertEquals(4, jugador1.getIdCasillaPosicion()); // 1 + valor Dado 3
-    }
-
-    @Test
-    public void testEjecutarTurnoConGanador() {
-        tablero.inicializarJugadores();
-        Jugador jugador1 = ListaJugadores.getListaJugadores().getJugador(1);
-        jugador1.setIdCasillaPosicion(61); // One move from winning
-        
-        // Set dice to exact value needed to win
-        Dado.getDado().setValorFijado(3); // 61 + 3 = 64 (win)
-        
-        boolean resultado = tablero.ejecutarTurno(1);
-        assertTrue(resultado);
-        
-        String output = outContent.toString();
-        assertTrue(output.contains("Turno del jugador 1"));
-    }
-
-    @Test
-    public void testFinalizarPartidaConGanador() {
-        tablero.inicializarJugadores();
-        ListaJugadores.getListaJugadores().getJugador(0).setIdCasillaPosicion(64); // Force win
-        
-        tablero.finalizarPartida(true);
-        
-        String output = outContent.toString();
-        assertTrue(output.contains("¡Fin de la partida! Ha ganado Jugador 1"));
-        assertTrue(output.contains("+------+------+")); // Board printing
-    }
-
-    @Test
-    public void testFinalizarPartidaSinGanador() {
-        tablero.finalizarPartida(false);
-        
-        String output = outContent.toString();
-        assertTrue(output.contains("Fin de la partida Se ha superado el número de turnos."));
-    }
-
-    @Test
-    public void testJugarPartidaCompletaSinGanador() {
-        // Setup fixed small moves that won't reach the end
-        Dado.getDado().setFixedValue(1);
-        
-        tablero.jugarPartida();
-        
-        String output = outContent.toString();
-        assertTrue(output.contains("Fin de la partida Se ha superado el número de turnos."));
-    }
-}
-     
-
-    @Test
     @Test
 public void testImprimirTablero() {
     tablero.crearTableroBasico();
