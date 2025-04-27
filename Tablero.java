@@ -88,32 +88,32 @@ public class Tablero {
             }
         }
     }
-    public CasillaMadre buscarCasilla(int idCasillaBuscada) {
+    public CasillaMadre buscarCasilla(int pIdCasillaBuscada) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (tablero[i][j].getIdCasilla() == idCasillaBuscada) {
+                if (tablero[i][j].getIdCasilla() == pIdCasillaBuscada) {
                     return tablero[i][j]; 
                 }
             }
         }
         return null; // Retorna null si no encuentra la casilla
     }
-    private int calcularIdCasilla(int fila, int columna) {
-        if (fila % 2 == 0) {
-            return 64 - (fila * 8 + columna); // Si la fila es par (0, 2, 4, 6)
+    private int calcularIdCasilla(int pFila, int pColumna) {
+        if (pFila % 2 == 0) {
+            return 64 - (pFila * 8 + pColumna); // Si la fila es par (0, 2, 4, 6)
 
         } else {  // Si la fila es impar (1, 3, 5, 7)
-            return 64 - (fila * 8 + (7 - columna));// Como va en dirección inversa, es 7-columna
+            return 64 - (pFila * 8 + (7 - pColumna));// Como va en dirección inversa, es 7-columna
         }
     }
-    public Coordenadas obtenerCoordenadas(int idCasilla) {
-        int fila = (64 - idCasilla) / 8;// no se considera el residuo
+    private Coordenadas obtenerCoordenadas(int pIdCasilla) {
+        int fila = (64 - pIdCasilla) / 8;// no se considera el residuo
         int columna;
     
         if (fila % 2 == 0) { // Si la fila es Par (0, 2, 4, 6)
-            columna = (64 - idCasilla)- (fila * 8);
+            columna = (64 - pIdCasilla)- (fila * 8);
         } else { // Si la fila es impar (1, 3, 5, 7)
-            columna = 7 - (64 - idCasilla - (fila * 8));
+            columna = 7 - (64 - pIdCasilla - (fila * 8));
         }
     
         return new Coordenadas(fila, columna);
@@ -122,7 +122,7 @@ public class Tablero {
 
     //set necesario para convertir casillas madres originales a casillas especiales 
 
-    public void setCasillaEspecial(int pIdCasilla, String pTipoCasilla, int pIdCasillaDestino) {
+    private void setCasillaEspecial(int pIdCasilla, String pTipoCasilla, int pIdCasillaDestino) {
         Coordenadas coordenadas = obtenerCoordenadas(pIdCasilla);
         int fila = coordenadas.getFila();
         int columna = coordenadas.getColumna();
@@ -145,7 +145,7 @@ public class Tablero {
                     break;
                 case "CASIFIN":
                     textoImprimir = "¡Lanza el dado y si obtienes 6, Avanza a la casilla 62!";
-                    tablero[fila][columna] = new CasillaCasiFin(pIdCasilla, textoImprimir);
+                    tablero[fila][columna] = new CasillaCasiFin(pIdCasilla,62, textoImprimir);
                     break;
             }
         }

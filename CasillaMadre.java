@@ -17,6 +17,6 @@ public class CasillaMadre {
   }
 
   protected void imprimirTexto() {
-    System.out.println(textoImprimir);
+    System.out.println(this.textoImprimir);
   }
 }

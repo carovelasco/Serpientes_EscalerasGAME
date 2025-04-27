@@ -1,7 +1,7 @@
 public class CasillaCasiFin extends CasillaEspecial {
 
-    public CasillaCasiFin(int pIdCasilla, String pTextoImprimir) {
-        super(pIdCasilla, 62, pTextoImprimir);
+    public CasillaCasiFin(int pIdCasilla, int pIdCasillaDestino, String pTextoImprimir) {
+        super(pIdCasilla, pIdCasillaDestino, pTextoImprimir);
     }
 
     @Override
