@@ -21,6 +21,6 @@ public class CasillaMadre {
   }
 
   public void imprimirId() {
-     System.out.print(this.idCasilla);
+     System.out.print(this.idCasilla + "\t");
   }
 }
