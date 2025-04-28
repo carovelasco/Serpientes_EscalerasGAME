@@ -19,4 +19,8 @@ public class CasillaMadre {
   protected void imprimirTexto() {
     System.out.println(this.textoImprimir);
   }
+
+  public void imprimirId() {
+     System.out.print( tablero[i][j].getIdCasilla() + "\t");
+  }
 }
