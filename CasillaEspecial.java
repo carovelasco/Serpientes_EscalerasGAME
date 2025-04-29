@@ -15,4 +15,9 @@ public class CasillaEspecial extends CasillaMadre {
     protected int getIdCasillaDestino() {
         return idCasillaDestino;
     }
+    
+    @Override
+    public void imprimirId() {
+        System.out.print( "*" + getIdCasilla()+"\t" );  
+    }
 }

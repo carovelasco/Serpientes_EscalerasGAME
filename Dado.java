@@ -25,7 +25,7 @@ public class Dado {
     }
 
     //Para Pruebas
-    public void setValorDado(int Valor)
+    /*public void setValorDado(int Valor)
     {
         if(valor<1||valor>6)
         {
@@ -41,6 +41,6 @@ public class Dado {
     public static void reiniciar()
     {
         miDado=null;
-    }
+    }*/
 
 }

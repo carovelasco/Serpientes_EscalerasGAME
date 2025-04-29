@@ -20,4 +20,8 @@ public class CasillaCasiFin extends CasillaEspecial {
             pJugador.setIdCasillaPosicion(this.getIdCasilla());
         }
     }
+    @Override
+    public void imprimirId() {
+        System.out.print("#"+ getIdCasilla()+ "\t");  
+    }
 }

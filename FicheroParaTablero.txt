@@ -15,3 +15,5 @@ ESCALERA,36,41
 # Casillas especiales
 ALINICIO,51,1
 CASIFIN,27,62
+
+

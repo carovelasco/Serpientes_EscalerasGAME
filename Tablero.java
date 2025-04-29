@@ -28,7 +28,7 @@ public class Tablero {
     }
 
     //para el caso en que el archivo ingresado no sea correcto o no exista se crea uno por default 
-    public void crearTableroBasico() {
+    private void crearTableroBasico() {
         this.asignarIdACasillasMadre();
         
         setCasillaEspecial(4, "ESCALERA", 14);
@@ -57,7 +57,7 @@ public class Tablero {
         boolean comprobarGanador = false;
         Jugador unJugador = null;
 
-        while (!comprobarGanador && numTurnos < 51) {
+        while (!comprobarGanador && numTurnos < 101) {
             System.out.println(" ");
             unJugador = ListaJugadores.getListaJugadores().pasarTurno();
             System.out.println("_________________________Turno del jugador "+unJugador.getIdJugador()+"_________________________");
