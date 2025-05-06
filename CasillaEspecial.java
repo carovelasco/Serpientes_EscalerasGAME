@@ -1,7 +1,7 @@
 public class CasillaEspecial extends CasillaMadre {
-    protected int idCasillaDestino; 
+    private int idCasillaDestino; 
 
-    public CasillaEspecial(int pIdCasilla, int pIdCasillaDestino, String pTextoImprimir) {
+    protected CasillaEspecial(int pIdCasilla, int pIdCasillaDestino, String pTextoImprimir) {
         super(pIdCasilla, pTextoImprimir); 
         this.idCasillaDestino = pIdCasillaDestino;
     }
