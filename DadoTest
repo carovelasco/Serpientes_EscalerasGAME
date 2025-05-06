@@ -1,17 +1,18 @@
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
 
 public class DadoTest {
+	Dado dado;
 
-    @BeforeEach
+
+@Before
     public void setUp() {
         Dado.reiniciar();
     }
 
-    @AfterEach
+    @After
     public void tearDown() {
        Dado.reiniciar();
     }
@@ -20,16 +21,14 @@ public class DadoTest {
     public void testSingletonPattern() {
         Dado dado1 = Dado.getDado();
         Dado dado2 = Dado.getDado();
-        assertSame(dado1, dado2, "Debería ser la misma instancia");
+        assertSame(dado1, dado2);
     }
 
     @Test
     public void testLanzarDadoFixedValue() {
         Dado dado = Dado.getDado();
-        
-        
         for (int i = 1; i <= 6; i++) {
-            dado.setValorFijado(i);
+            dado.setValorDado(i);
             assertEquals(i, dado.lanzarDado());
         }
     }
@@ -42,27 +41,26 @@ public class DadoTest {
         // Test multiple random rolls 
         for (int i = 0; i < 1000; i++) {
             int result = dado.lanzarDado();
-            assertTrue(result >= 1 && result <= 6, "El valor debe estar entre 1 y 6");
+            assertTrue(result >= 1 && result <= 6);
         }
     }
 
     @Test
-    public void testSetValorFijado() {
+    public void testSetValordado() {
         Dado dado = Dado.getDado();
         
         assertThrows(IllegalArgumentException.class, () -> {
-            dado.setFixedValue(0);
+            dado.setValorDado(0);
         });
-        
         assertThrows(IllegalArgumentException.class, () -> {
-            dado.setFixedValue(7);
+            dado.setValorDado(7);
         });
     }
 
     @Test
     public void testResetToRandom() {
         Dado dado = Dado.getDado();
-        dado.setFixedValue(3);
+        dado.setValorDado(3);
         assertEquals(3, dado.lanzarDado());
         
         dado.resetToRandom();
@@ -74,6 +72,6 @@ public class DadoTest {
                 break;
             }
         }
-        assertTrue(encontradoValorDiferente, "Debería generar valores aleatorios después de reset");
+        assertTrue(encontradoValorDiferente);
     }
 }
