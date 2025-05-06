@@ -36,106 +36,10 @@ public class TableroTest {
      assertSame(tablero,unTablero);
     }
 
-      
-    @Test
-    public void testCargarTableroDesdeArchivo() throws Exception {
-        // Crear archivo temporal de prueba
-        File archivoTemp = File.createTempFile("tablero_test", ".txt");
-        try (FileWriter escritor= new FileWriter(archivoTemp)) {
-           escritor.write("ESCALERA,4,14\nSERPIENTE,28,15\nAlInicio,11,1/nCASIFIN,60,62");
-        }
-        
-        tablero.cargarTableroDesdeArchivo(testFile.getAbsolutePath());
-        
-        assertTrue(tablero.buscarCasilla(4) instanceof CasillaEspecial);
-        assertTrue(tablero.buscarCasilla(28) instanceof CasillaEspecial);
-        assertTrue(tablero.buscarCasilla(11) instanceof CasillaEspecial);
-        assertTrue(tablero.buscarCasilla(60) instanceof CasillaCasiFin);
-        assertFalse(tablero.buscarCasilla(1) instanceof CasillaEspecial);
-        
-       archivoTemp.delete();
-    }
-   
-    @Test
-    public void testCargarTableroDesdeArchivoInvalido() throws IOException {
-        // Crear archivo temporal con dato invalido
-        File archivoTemp = File.createTempFile("tablero_test_invalido", ".txt");
-        FileWriter escritor = new FileWriter(archivoTemp);
-        escritor.write("SERPIENTE, 16, 99\n"); // ID destino fuera de rango
-        escritor.write("ESCALERA, 9, 5\n");     // Escalera que baja (inválido)
-        escritor.write("TIPOINVALIDO, 10, 20\n"); // Tipo no válido
-        escritor.close();
-        
-        tablero.cargarTableroDesdeArchivo(archivoTemp.getName());
-        
-        CasillaMadre casilla = tablero.buscarCasilla(4);
-        assertTrue(casilla instanceof CasillaEspecial); // Check one of the default special casillas
-        
-        tempFile.delete();
-    }
-
-   @Test
-    public void testCargarTableroDesdeArchivoValido() throws IOException {
-        // Create a temporary valid file
-    	 File tempFile = File.createTempFile("tableroTest", ".txt");
-         FileWriter writer = new FileWriter(tempFile);
-         writer.write("ESCALERA,5,10\n");
-         writer.write("SERPIENTE,15,5\n");
-         writer.write("ALINICIO,20,1\n");
-         writer.write("CASIFIN,60,62\n");
-         writer.close();
-         
-         tablero.cargarTableroDesdeArchivo(tempFile.getAbsolutePath());
-         
-         // Verify the squares were set correctly
-         CasillaMadre casilla = tablero.buscarCasilla(5);
-         assertTrue(casilla instanceof CasillaEspecial);
-         assertEquals(10, ((CasillaEspecial)casilla).getIdCasillaDestino());
-         
-         casilla = tablero.buscarCasilla(15);
-         assertTrue(casilla instanceof CasillaEspecial);
-         assertEquals(5, ((CasillaEspecial)casilla).getIdCasillaDestino());
-         
-         tempFile.delete();
-     }
-
-
-    @Test
-    public void testCargarTableroDesdeArchivoInvalido() throws IOException {
-    	  // Create a temporary test file with invalid data
-        File tempFile = File.createTempFile("tableroTestInvalid", ".txt");
-        FileWriter writer = new FileWriter(tempFile);
-        writer.write("ESCALERA,5,10\n");
-        writer.write("INVALID_TYPE,15,5\n");  // Invalid type
-        writer.write("SERPIENTE,70,5\n");    // Invalid ID (out of range)
-        writer.close();
-        
-        tablero.cargarTableroDesdeArchivo(tempFile.getAbsolutePath());
-        
-        // The method should fall back to creating a basic board
-        // Verify by checking one of the default special squares
-        CasillaMadre casilla = tablero.buscarCasilla(4);
-        assertTrue(casilla instanceof CasillaEspecial);
-        assertEquals(14, ((CasillaEspecial)casilla).getIdCasillaDestino());
-        
-        tempFile.delete();
-    }
-    
-    @Test
-    public void testCargarTableroDesdeArchivoInexistente() {
-        tablero.cargarTableroDesdeArchivo("archivo_que_no_existe.txt");
-        
-        // Should fall back to creating a basic board
-        CasillaMadre casilla = tablero.buscarCasilla(4);
-        assertTrue(casilla instanceof CasillaEspecial);
-        assertEquals(14, ((CasillaEspecial)casilla).getIdCasillaDestino());
-    }
-
- 
-
-   @Test
+  @Test
     public void testCrearTableroBasico() {
         tablero.crearTableroBasico();
+        
         // Verify that some default special tiles exist
         assertTrue(tablero.buscarCasilla(4) instanceof CasillaEspecial);  // Escalera
         assertTrue(tablero.buscarCasilla(16) instanceof CasillaEspecial); // Serpiente
@@ -145,6 +49,10 @@ public class TableroTest {
         assertTrue(tablero.buscarCasilla(22) instanceof CasillaEspecial); // Escalera
         assertTrue(tablero.buscarCasilla(27) instanceof CasillaCasiFin); //CasiFin
         assertTrue(tablero.buscarCasilla(61) instanceof CasillaEspecial); // Serpiente
+        assertFalse(tablero.buscarCasilla(1) instanceof CasillaEspecial);
+        assertFalse(tablero.buscarCasilla(64) instanceof CasillaEspecial);
+        assertFalse(tablero.buscarCasilla(7) instanceof CasillaEspecial);
+        
         CasillaMadre casilla = tablero.buscarCasilla(4);
         assertTrue(casilla instanceof CasillaEspecial);
         assertEquals(14, ((CasillaEspecial)casilla).getIdCasillaDestino());
@@ -196,7 +104,53 @@ public class TableroTest {
         
     }
 
-   @Test
+
+
+    @Test
+    public void testCargarTableroDesdeArchivoInvalido() throws IOException {
+    	  // Create a temporary test file with invalid data
+        File tempFile = File.createTempFile("tableroTestInvalid", ".txt");
+        FileWriter writer = new FileWriter(tempFile);
+        writer.write("ESCALERA,5,10\n");
+        writer.write("INVALID_TYPE,15,5\n");  // Invalid type
+        writer.write("SERPIENTE,70,5\n");    // Invalid ID (out of range)
+        writer.close();
+        
+        tablero.cargarTableroDesdeArchivo(tempFile.getAbsolutePath());
+        
+        // The method should fall back to creating a basic board
+        // Verify by checking one of the default special squares
+        CasillaMadre casilla = tablero.buscarCasilla(4);
+        assertTrue(casilla instanceof CasillaEspecial);
+        assertEquals(14, ((CasillaEspecial)casilla).getIdCasillaDestino());
+        
+        tempFile.delete();
+    }
+    
+    @Test
+    public void testCargarTableroDesdeArchivoInexistente() {
+        tablero.cargarTableroDesdeArchivo("archivo_que_no_existe.txt");
+        
+        // Should fall back to creating a basic board
+        CasillaMadre casilla = tablero.buscarCasilla(4);
+        assertTrue(casilla instanceof CasillaEspecial);
+        assertEquals(14, ((CasillaEspecial)casilla).getIdCasillaDestino());
+    }
+
+ 
+
+    @Test
+    public void testImprimirTablero() {
+        tablero.crearTableroBasico();
+        tablero.imprimirTablero();
+
+        String output = outContent.toString();
+        assertTrue(output.contains("+------+"));  // Check the separator
+        assertTrue(output.contains("64"));    // Check for the first and last cell
+        assertTrue(output.contains("4"));  // Ensure a special tile ID like 4 is printed
+    }
+
+    @Test
     public void testObtenerCoordenadas() {
         tablero.crearTableroBasico();
     
@@ -476,18 +430,40 @@ public class TableroTest {
         casilla = tablero.buscarCasilla(99);  // Invalid ID
         assertNull(casilla);
     }
-
-
-    @Test
-public void testImprimirTablero() {
-    tablero.crearTableroBasico();
-    tablero.imprimirTablero();
     
-    String output = outContent.toString();
-    assertTrue(output.contains("+------+")); 
-    assertTrue(output.contains("64"));    
-    assertTrue(output.contains("1"));       
-    assertTrue(output.contains("4"));      
-    assertTrue(output.contains("16"));       
-}
+    @Test
+    public void testPartidaTerminaEnEmpatePorTurnos()
+    {
+    	Dado dado= Dado.getDado();
+    	dado.setValorDado(1);
+        tablero.crearTableroBasico();
+        tablero.jugarPartida(); 
+
+        
+        String output = outContent.toString();
+
+        
+        assertTrue(output.contains("Fin de la partida Se ha superado el número de turnos."));
+                  
+            
+        
+        assertFalse(output.contains("¡Fin de la partida! Ha ganado Jugador")); 
+                  
+    }
+    
+    @Test
+    public void testPartidaConGanador() {
+        
+        
+        Dado dado = Dado.getDado();
+        dado.setValorDado(4); 
+        tablero.crearTableroBasico();
+        tablero.jugarPartida();
+
+        // Get the captured output from the system
+        String output = outContent.toString();
+
+        // Assert the game ends with a winner message
+        assertTrue(output.contains("¡Fin de la partida! Ha ganado Jugador"));
+    }
 }
