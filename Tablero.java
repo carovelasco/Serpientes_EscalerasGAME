@@ -68,11 +68,13 @@ public class Tablero {
         
         if (comprobarGanador) {
             System.out.println(" ");
+            System.out.println("Enhorabuena");
             System.out.println("¡Fin de la partida! Ha ganado " + "Jugador "+unJugador.getIdJugador());
             this.imprimirTablero();
 
         } else {
             System.out.println(" ");
+            System.out.println("Oh Oh ");
             System.out.println("Fin de la partida Se ha superado el número de turnos.");
         }
     }

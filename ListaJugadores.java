@@ -28,11 +28,11 @@ public class ListaJugadores {
         Jugador unJugador=this.lista.get(0);
         this.lista.remove(unJugador);
         this.lista.add(unJugador);      
-        return unJugador;
+        return this.lista.get(0);
     }
 
     public boolean comprobarGanador() {
-        Jugador jugadorActual = this.lista.get(1);
+        Jugador jugadorActual = this.lista.get(0);
         
         if (jugadorActual.getIdCasillaPosicion() == 64) {
             return true;
